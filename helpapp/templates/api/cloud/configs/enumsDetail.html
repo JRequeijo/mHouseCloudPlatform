@@ -1,0 +1,66 @@
+{% extends 'layouts/help_layout.html' %}
+
+{% block title %} mHouse Framework - Help {% endblock %}
+
+{% block content_data %}
+<h1 class="page-header">Online Cloud HTTP RESTful API:</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">URI</h3>
+    </div>
+    <div class="panel-body">
+        configs/enums/<strong><em>enum_value_type_id</em></strong>/
+    </div>
+</div>
+
+<h3 class="page-header">Method: GET</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Get the Enumerated Value Type identified with the ID <strong><em>enum_value_type_id</em></strong>.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>200 OK - JSON object with the Enumerated Value Type identified with ID <strong><em>enum_value_type_id</em></strong>.</li>
+            <li>404 NOT FOUND - If the requested Enumerated Value Type doesn’t exist for the authenticated user.</li>
+        </ul>
+    </div>
+</div>
+
+<h3 class="page-header">Method: DELETE</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Delete the Enumerated Value Type identified with the ID <strong><em>enum_value_type_id</em></strong>.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>204 NO CONTENT - Empty Response confirming the Enumerated Value Type deletion.</li>
+            <li>404 NOT FOUND - If the requested Enumerated Value Type doesn’t exist for the authenticated user.</li>
+        </ul>
+    </div>
+</div>
+<hr>
+<div class="alert alert-warning" role="alert">
+    <strong>Note:</strong> Each user can only individually get/delete his/her own custom Enumerated Value Types, 
+        for core ones an unauthorized error will be presented and for other user custom 
+        Enumerated Value Types a 404 error will be presented.
+</div>
+{% endblock %}

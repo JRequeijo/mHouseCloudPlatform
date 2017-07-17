@@ -1,0 +1,67 @@
+{% extends 'layouts/help_layout.html' %}
+
+{% block title %} mHouse Framework - Help {% endblock %}
+
+{% block content_data %}
+<h1 class="page-header">Online Cloud HTTP RESTful API:</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">URI</h3>
+    </div>
+    <div class="panel-body">
+        configs/device_types/<strong><em>device_type_id</em></strong>/
+    </div>
+</div>
+
+<h3 class="page-header">Method: GET</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Get the Device Type identified with the ID <strong><em>device_type_id</em></strong>.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>200 OK - JSON object with the Device Type identified with ID <strong><em>device_type_id</em></strong>.</li>
+            <li>404 NOT FOUND - If the requested Device Type doesn’t exist for the authenticated user.</li>
+        </ul>
+    </div>
+</div>
+
+<h3 class="page-header">Method: DELETE</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Delete the Device Type identified with the ID <strong><em>device_type_id</em></strong>.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>204 NO CONTENT - Empty Response confirming the Device Type deletion.</li>
+            <li>404 NOT FOUND - If the requested Device Type doesn’t exist for the authenticated user.</li>
+        </ul>
+    </div>
+</div>
+<hr>
+<div class="alert alert-warning" role="alert">
+    <strong>Note:</strong> Each user can only individually get/delete his/her own custom Device Types, 
+        for core ones an unauthorized error will be presented and for other user custom 
+        Device Types a 404 error will be presented.
+</div>
+
+{% endblock %}

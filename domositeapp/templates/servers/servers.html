@@ -1,0 +1,60 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}Servers{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">
+		Servers
+	</h1>
+	{% if data.servers %}
+		<table class="table table-hover">
+			<thead>
+				<th>ID</th>
+				<th>Server Name</th>
+				<th>CoAP Server Address</th> 
+				<th class="hidden-xs">CoAP Server Port</th>
+				<th class="hidden-xs">Server Multicast Opt.</th>
+				<th>Proxy Address</th> 
+				<th class="hidden-xs">Proxy Port</th> 
+				<th class="hidden-xs">Nº of Devices</th>
+				<th>Status</th>
+			</thead>
+			{% for ele in data.servers %}
+				<tr class="elementRow">
+					<td>{{ele.id}}</td>
+					<td>
+						<a href="{% url 'serverDetail' pk=ele.id %}">{{ele.name}}</a>
+					</td>
+					<td>{{ele.coap_address}}</td>
+					<td class="hidden-xs">{{ele.coap_port}}</td>
+					<td class="hidden-xs">{{ele.multicast}}</td>
+					<td>{{ele.proxy_address}}</td>
+					<td class="hidden-xs">{{ele.proxy_port}}</td>
+					<td class="hidden-xs">{{ele.device_count}}</td>
+					<td id="stateCol-{{ele.id}}">
+						{% if ele.active %}
+							<span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span>
+							<span>Running</span>
+						{% else %}
+							<span class="glyphicon glyphicon-remove" style="color: red;" aria-hidden="true"></span>
+							<span>Down</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<div class="alert alert-info" role="alert">
+			You don't have any server yet. Please turn on and register one.
+		</div>	
+	{% endif %}
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+<script type="text/javascript">
+	document.onload = checkAllElementsState("server");
+	window.setInterval(checkAllElementsState, 5000, "server");
+</script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'layouts/mainlayout.html' %}
+{% load staticfiles %}
+
+{% block custom_styles %}
+    <link href="{% static 'css/dash.css' %}" rel="stylesheet">
+
+    <style type="text/css">
+        #wellcome{
+            color: #fff;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .menubutton{
+            cursor: pointer;
+        }
+    </style>
+
+    <script type="text/javascript">
+      
+        function presentmenu(menu){
+
+            var d = document.getElementById(menu).style.display;
+            if(d == 'none'){
+                d = 'block';
+            }else
+                d = 'none';
+
+            document.getElementById(menu).style.display = d;
+
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="row">
+		<div id="sidemenu" class="col-xs-2 col-sm-3 col-md-2 sidebar">
+			{% url 'dashboard' as dash_url %}
+			<ul class="nav nav-sidebar">
+				<li class="{% if request.path == dash_url %} %} active {% endif %}">
+					<a href="{{dash_url}}">Overview 
+						<span class="sr-only">(current)</span>
+					</a>
+				</li>
+				{% url 'history' as hist_url %}
+				<li class="{% if request.path == hist_url %} active {% endif %}">
+					<a href="{{hist_url}}">History</a>
+				</li>
+				{% url 'analytics' as analitycs_url %}
+				<li class="{% if request.path == analitycs_url %} active {% endif %}">
+					<a href="{{analitycs_url}}">Analytics</a>
+				</li>
+			</ul>
+
+			<ul class="nav nav-sidebar">
+				{% url 'configs' as configs_url %}
+				{% url 'services' as services_url %}
+                <li class="{% if request.path == configs_url %} active {% endif %}">
+					<a href="{{configs_url}}">Configurations</a>
+				</li>
+                <li class="{% if request.path == services_url %} active {% endif %}">
+					<a href="{{services_url}}">Services</a>
+				</li>
+			</ul>
+			
+			{% url 'houses' as houses_url %}
+            {% url 'areas' as areas_url %}
+            {% url 'divisions' as divisions_url %}
+            {% url 'devices' as devices_url %}
+            {% url 'servers' as servers_url %}
+			<ul class="nav nav-sidebar">
+				<li class="{% if request.path == houses_url %} active {% endif %}">
+					<a href="{{houses_url}}">Houses</a>
+				</li>
+				<li class="{% if request.path == areas_url %} active {% endif %}">
+					<a href="{{areas_url}}">Areas</a>
+				</li>
+				<li class="{% if request.path == divisions_url %} active {% endif %}">
+					<a href="{{divisions_url}}">Divisions</a>
+				</li>
+                <li class="{% if request.path == servers_url %} active {% endif %}">
+					<a href="{{servers_url}}">Servers</a>
+				</li>
+				<li class="{% if request.path == devices_url %} active {% endif %}">
+					<a href="{{devices_url}}">Devices</a>
+				</li>
+			</ul>
+		</div>
+		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			{% block content_data %}{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+

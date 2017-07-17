@@ -1,0 +1,83 @@
+{% extends 'layouts/help_layout.html' %}
+
+{% block title %} mHouse Framework - Help {% endblock %}
+
+{% block content_data %}
+<h1 class="page-header">Online Cloud HTTP RESTful API:</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">URI</h3>
+    </div>
+    <div class="panel-body">
+        servers/
+    </div>
+</div>
+
+<h3 class="page-header">Method: GET</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Get all the Servers for the authenticated user.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>200 OK - JSON object with all the Servers.</li>
+        </ul>
+    </div>
+</div>
+
+<h3 class="page-header">Method: POST</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Add (create) a new Server for the authenticated user.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Request Body</h3>
+    </div>
+    <div class="panel-body">
+        <p>JSON describing the new Server.</p>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h5 class="panel-title">Required Fields</h5>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li><strong>name</strong> - The name of the new Server.</li>
+                    <li><strong>address</strong> - The IP address of the new Server. 
+                    This field must be unique for the user.</li>
+                    <li><strong>port</strong> - The CoAP port used by the new Server.</li>
+                    <li><strong>multicast</strong> - A boolean stating if the new Server 
+                    is using a multicast address for CoAP communication or not.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>200 OK - JSON object with all the Servers of the authenticated user.</li>
+            <li>400 BAD REQUEST - Something is wrong with the request.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

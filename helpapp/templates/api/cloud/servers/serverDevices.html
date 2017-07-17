@@ -1,0 +1,38 @@
+{% extends 'layouts/help_layout.html' %}
+
+{% block title %} mHouse Framework - Help {% endblock %}
+
+{% block content_data %}
+<h1 class="page-header">Online Cloud HTTP RESTful API:</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">URI</h3>
+    </div>
+    <div class="panel-body">
+        servers/<strong><em>server_id</em></strong>/devices/
+    </div>
+</div>
+
+<h3 class="page-header">Method: GET</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Get all the Devices associated to the Server identified with the ID <strong><em>server_id</em></strong>.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>200 OK - JSON object with the Devices list.</li>
+            <li>404 NOT FOUND - If the requested Server doesn’t exist for the authenticated user.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

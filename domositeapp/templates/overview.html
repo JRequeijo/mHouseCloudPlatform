@@ -1,0 +1,93 @@
+{% extends 'layouts/dashboard_layout.html' %}
+
+{% block title%}Dashboard{% endblock %}
+{% block content_data %}
+	<h1 class="page-header">Overview</h1>
+	{% if data.analytics %}
+	<div>
+		<canvas id="myChart" width="100" height="30"></canvas>
+	</div>
+	<hr class="col-md-12">
+	{% endif %}
+
+	{% if data.log %}
+	<div>
+		<h3><a href="{% url 'history' %}">Actions History</a></h3>
+		<table class="table table-hover">
+			<thead>
+				<th>#</th>
+				<th>Action</th>
+				<th>Description</th>
+				<th>Timestamp</th>
+			</thead>
+			<tbody>
+				{% for act in data.log %}
+					{% if act.action == "CREATE" %}
+					<tr class="info" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+					{% elif act.action == "DELETE"%}
+					<tr class="info">
+					{% elif act.action == "STATUS DOWN"%}
+					<tr class="danger" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+					{% elif act.action == "STATUS UP"%}
+					<tr class="success" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+					{% elif act.action == "ERROR"%}
+                	<tr class="warning" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+					{% else %}
+					<tr onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+					{% endif %}
+						<td>{{forloop.counter}}</td>
+						<td>{{act.action}}</td>
+						<td>{{act.description}}</td>
+						<td>{{act.timestamp}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% endif %}
+
+{% endblock %}
+
+{% block footer %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+	<script>
+	var ctx = document.getElementById("myChart").getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+			datasets: [{
+				label: '# of Votes',
+				data: [12, 19, 3, 5, 2, 3],
+				backgroundColor: [
+					'rgba(255, 99, 132, 0.2)',
+					'rgba(54, 162, 235, 0.2)',
+					'rgba(255, 206, 86, 0.2)',
+					'rgba(75, 192, 192, 0.2)',
+					'rgba(153, 102, 255, 0.2)',
+					'rgba(255, 159, 64, 0.2)'
+				],
+				borderColor: [
+					'rgba(255,99,132,1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(255, 206, 86, 1)',
+					'rgba(75, 192, 192, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+				],
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero:true
+					}
+				}]
+			}
+		}
+	});
+	</script>
+{% endblock %}

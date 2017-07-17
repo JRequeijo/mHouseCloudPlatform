@@ -1,0 +1,37 @@
+{% extends 'layouts/dashboard_layout.html' %}
+
+{% block title%}History{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">Actions History</h1>
+    <table class="table table-hover">
+        <thead>
+            <th>#</th>
+            <th>Action</th>
+            <th>Description</th>
+            <th>Timestamp</th>
+        </thead>
+        <tbody>
+            {% for act in data.log %}
+                {% if act.action == "CREATE" %}
+                <tr class="info" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+                {% elif act.action == "DELETE"%}
+                <tr class="info">
+                {% elif act.action == "STATUS DOWN"%}
+                <tr class="danger" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+                {% elif act.action == "STATUS UP"%}
+                <tr class="success" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+                {% elif act.action == "ERROR"%}
+                <tr class="warning" onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+                {% else %}
+                <tr onclick="window.location.href = '{% url act.instance_class|lower|add:'Detail' pk=act.instance_id %}'">
+                {% endif %}
+                    <td>{{forloop.counter}}</td>
+                    <td>{{act.action}}</td>
+                    <td>{{act.description}}</td>
+                    <td>{{act.timestamp}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}Houses{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">
+		Houses
+		<button class="btn btn-primary button-form js-tooltip pull-right"
+			id="addHouseButton" data-toggle="modal" data-target="#houseCreationModal">
+			Add House
+		</button>
+	</h1>
+	{% if data.houses %}
+		<button class="btn btn-xs btn-danger button-form js-tooltip"
+			id="deleteBtn" data-toggle="modal" data-target="#deleteModal" 
+			data-original-title="Make a DELETE request on the Snippet Detail resource" disabled>
+			DELETE
+		</button>
+		<table class="table table-hover">
+			<thead>
+				<th><input id="masterCheckInpt" 
+								type="checkbox" onclick="markAllForDeletion(this.checked)"></input>
+					</th>	
+				<th>ID</th>
+				<th>House Name</th>
+				<th>Home Server</th> 
+				<th>Nº of Areas</th> 
+			</thead>
+			{% for ele in data.houses %}
+				<tr>
+					<td><input class="checkInpt" 
+								type="checkbox" onclick="markForDeletion(this)"></input>
+					</td>
+					<td>{{ele.id}}</td>
+					<td>
+						<a href="{% url 'houseDetail' pk=ele.id %}">{{ele.name}}</a>
+					</td>
+					{% if ele.server %}
+						<td>{{ele.server}}</td>
+					{% else %}
+						<td style="color: red;" >Unassigned</td>
+					{% endif %}
+					<td>{{ele.area_count}}</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h4 class="text-center" id="info_text">Are you sure you want to delete this houses?</h4>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button class="btn btn-danger" 
+								onclick="deleteMarkedElements('house')">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="alert alert-info" role="alert">
+			You don't have any house yet. Please add one.
+		</div>	
+	{% endif %}
+	<div class="modal fade" id="houseCreationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					{% for ele in data.form %}
+						<div class="form-group">
+							<label for="{{ele.auto_id}}" class="control-label">{{ele.label}}</label>
+							<div>
+								{{ele}}
+								<span id="house-{{ele.name}}-err" class="help-block err-div">
+									<strong></strong>
+								</span>
+							</div>
+						</div>
+					{% endfor %}
+					<div>
+						<span id="house-non_field_errors-err" class="help-block err-div">
+							<strong></strong>
+						</span>
+					</div>				
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-primary" 
+							onclick="newElement('house', '{{request.get_host}}', 
+									'{% url 'houses' %}', false)">Add House</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+{% endblock %}

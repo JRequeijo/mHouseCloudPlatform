@@ -1,0 +1,67 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}Settings{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">My Account Settings</h1>
+    <div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="present_analytics_on_dash"
+                {% if data.settings.present_analytics_on_dash %} checked {% endif %}>
+                Presenting Analytics on Overview Page
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="present_history_on_dash"
+                {% if data.settings.present_history_on_dash %} checked {% endif %}>
+                Presenting Action History on Overview Page
+            </label>
+        </div>
+        <button class="btn btn-primary col-md-offset-4 col-md-3"
+                onclick="update_settings(this.parentElement)">Save Settings</button>
+    </div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+<script type="text/javascript">
+    function update_settings(form){
+        
+        var inpts = form.getElementsByTagName("input");
+        var dict = {};
+        for(var i=0; i<inpts.length; i++){
+            if(inpts[i].checked){
+                dict[inpts[i].name] = true;
+            }else{
+                dict[inpts[i].name] = false;
+            }
+        }
+
+        var data = JSON.stringify(dict);
+
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+            if (this.readyState == 4){
+                if (this.status == 200) {
+                    window.alert("Settings Saved");
+                    return true;
+                }else{
+                    var resp = JSON.parse(this.responseText);
+                    window.alert(resp["error_msg"]);
+                    return false;
+                }
+            }
+        };
+
+        // window.alert(data);
+        req.open("PATCH", "/settings/", true);
+        var csrftoken = getCookie("csrftoken");
+        req.setRequestHeader("Content-type", "application/json");
+        req.setRequestHeader("X-CSRFToken", csrftoken);
+        req.send(data);
+    }
+</script>
+{% endblock%}

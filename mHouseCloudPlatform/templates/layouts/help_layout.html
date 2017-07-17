@@ -1,0 +1,122 @@
+{% extends 'layouts/mainlayout.html' %}
+{% load staticfiles %}
+
+{% block custom_styles %}
+    <link href="{% static 'css/dash.css' %}" rel="stylesheet">
+
+    <style type="text/css">
+        #wellcome{
+            color: #fff;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .menubutton{
+            cursor: pointer;
+        }
+    </style>
+
+    <script type="text/javascript">
+      
+        function presentmenu(menu){
+
+            var d = document.getElementById(menu).style.display;
+            if(d == 'none'){
+                d = 'block';
+            }else
+                d = 'none';
+
+            document.getElementById(menu).style.display = d;
+
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="row">
+		<div id="sidemenu" class="col-xs-2 col-sm-3 col-md-2 sidebar">
+			<ul class="nav nav-sidebar">
+				<li>
+					<a href="{% url 'help' %}">mHouse Overview 
+						<span class="sr-only">(current)</span>
+					</a>
+				</li>
+                <li>
+					<a data-toggle="collapse" 
+                    href="#CloudPlatform_menu" aria-expanded="false" 
+                    aria-controls="CloudPlatform_menu">Cloud Platform</a>
+                    <ul id="CloudPlatform_menu" class="{% if 'cloudplatform' not in request.path %}collapse{% endif %} nav col-md-offset-1">
+                        <li><a href="{% url 'cloudplatformMain'%}">Overview</a></li>
+                    </ul>
+                </li>
+                <li>
+					<a data-toggle="collapse" 
+                    href="#HomeServer_menu" aria-expanded="false" 
+                    aria-controls="HomeServer_menu">Home Server</a>
+                    <ul id="HomeServer_menu" class="{% if 'homeserver' not in request.path %}collapse{% endif %} nav col-md-offset-1">
+                        <li><a href="{% url 'homeserverMain'%}">Overview</a></li>
+                    </ul>
+                </li>
+                <li>
+					<a data-toggle="collapse" 
+                    href="#Endpoints_menu" aria-expanded="false" 
+                    aria-controls="Endpoints_menu">Endpoints</a>
+                    <ul id="Endpoints_menu" class="{% if 'endpoints' not in request.path %}collapse{% endif %} nav col-md-offset-1">
+                        <li><a href="{% url 'endpointsMain'%}">Overview</a></li>
+                    </ul>
+                </li>
+                <li>
+					<a data-toggle="collapse" 
+                    href="#RESTful_APIs_menu" aria-expanded="false" 
+                    aria-controls="RESTful_APIs_menu">mHouse RESTful APIs</a>
+                    <ul id="RESTful_APIs_menu" class="{% if 'api' not in request.path %}collapse{% endif %} nav col-md-offset-1">
+                        <li><a href="{% url 'apiMainHelp'%}">APIs Overview</a></li>
+                        <li>
+                            {% url 'cloudAPImain' as cloud_url %}
+                            <a href="{{cloud_url}}">Cloud HTTP API</a>
+                            {% if "cloud" in request.path %}
+                            <ul class="nav col-md-offset-1">
+                                <li><a href="{{cloud_url}}#configs">Configurations</a></li>
+                                <li><a href="{{cloud_url}}#spaces">Spaces</a></li>
+                                <li><a href="{{cloud_url}}#services">Services</a></li>
+                                <li><a href="{{cloud_url}}#serversdevices">Servers & Devices</a></li>
+                                <li><a href="{{cloud_url}}#history">History</a></li>
+                            </ul>
+                            {% endif %}
+                        </li>
+                        <li><a href="{% url 'hsHTTPAPImain'%}">Home Server HTTP API</a></li>
+                        <li><a href="{% url 'hsCOAPAPImain'%}">Home Server CoAP API</a></li>
+                    </ul>
+				</li>
+			</ul>
+		</div>
+		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			{% block content_data %}{% endblock %}
+                <hr class="">
+                <footer class="footer">
+                    <p class="pull-right"><a href="#">Back to top</a></p>
+                    <p>&copy; 2017 mHouse &middot; 
+                        <a href="{% url 'help' %}">Documentation</a> &middot; 
+                        <a href="{% url 'homepage' %}#about">About</a>  &middot; 
+                        <a href="{% url 'register' %}">Register</a> &middot; 
+                        <a href="{% url 'login' %}">Login</a>
+                    </p>
+                </footer>
+		</div>
+        
+	</div>
+</div>
+<script type="text/javascript">
+    function goToByScroll(id){
+        // Remove "link" from the ID
+        id = id.replace("link", "");
+        // Scroll
+        $('html,body').animate({
+            scrollTop: $("#"+id).offset().top},
+            'slow');
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'layouts/home_layout.html' %}
+
+{% block title %}mHouse Framework - Login{% endblock %}
+
+{% block content_data %}
+<div class="container" style="padding-top: 70px;">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">Login</div>
+                <div class="panel-body">
+                    {% if next %}
+                    <form class="form-horizontal" role="form" method="POST" action="{% url 'login' %}?next={{next}}">
+                    {% else %}
+                    <form class="form-horizontal" role="form" method="POST" action="{% url 'login' %}">
+                    {% endif%}
+                        {% csrf_token %}
+                        {% if form.errors %}
+                        	<div class="alert alert-danger" role="alert">{{form.non_field_errors.as_text}}</div>
+                        {% endif %}
+						
+						{% for ele in form %}
+	                        <div class="form-group {{ ele.errors|yesno:' has-error, '}}">
+	                            <label for="{{ele.auto_id}}" class="col-md-4 control-label">{{ele.label}}</label>
+	
+	                            <div class="col-md-6">
+	                                {{ele}}
+	                            </div>
+	                        </div>
+						{% endfor %}
+
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary col-md-2">
+                                    Login
+                                </button>
+
+                                <div class="col-md-6">
+                                    <a class="btn btn-link" href="{% url 'passrecv' %}">
+                                        <small>Forgot Your Password?</small>
+                                    </a>
+
+                                    <a class="btn btn-link" href="{% url 'register' %}">
+                                        <small>If you don't have an account, register here.</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

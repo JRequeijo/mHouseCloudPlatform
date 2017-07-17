@@ -1,0 +1,109 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}{{data.form.name.value}}{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">
+		{{data.form.name.value}}
+		<button  class="btn btn-danger button-form js-tooltip pull-right" 
+			title="" data-toggle="modal" data-target="#deleteModal">
+			DELETE
+		</button>
+	</h1>
+	<table class="table">
+		<thead>
+			<th>House ID</th>
+			<th>House Name</th>
+			<th>Home Server</th>
+		</thead>
+		<tr id="houseUpdateForm">
+			<td>{{data.ele.id}}</td>
+			{% for ele in data.form %}
+				<td>
+					{{ele}}
+					<span id="house-{{ele.name}}-err" class="help-block err-div">
+						<strong></strong>
+					</span>
+					<span id="house-non_field_errors-err" class="help-block err-div">
+						<strong></strong>
+					</span>
+				</td>
+			{% endfor %}
+			<td>
+				<button class="btn btn-primary button-form js-tooltip" 
+					title="" data-toggle="modal" data-target="#updateModal">
+					UPDATE
+				</button>
+			</td>
+		</tr>
+	</table>
+	
+	<hr class="col-md-12 col-xs-12">
+	<h3 class="page-header">House Areas</h3>
+	{% if data.areas %}	
+		<table class="table table-hover">
+			<thead>			
+				<th>ID</th>
+				<th>Area Name</th>
+				<th>Order</th> 
+	 			<th>Nº of Divisions</th> 
+	<!-- 			<th>Options</th> -->
+			</thead>
+			{% for ele in data.areas %}
+				<tr>				
+					<td>{{ele.id}}</td>
+					<td>
+						<a href="{% url 'areaDetail' pk=ele.id %}">{{ele.name}}</a>
+					</td>
+					<td>{{ele.order}}</td>
+					<td>{{ele.division_count}}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<div class="alert alert-info" role="alert">
+			You don't have any area on this house.
+		</div>	
+	{% endif %}
+
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h4 class="text-center" id="info_text">Are you sure you want to delete this House?</h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-danger" 
+						onclick="deleteElement('house', {{data.ele.id}}, redirect, '{{request.get_host}}', '{% url 'houses' %}', false)">
+						DELETE
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h4 class="text-center" id="info_text">Are you sure you want to update this house?</h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-primary" 
+						onclick="updateElement('house', {{data.ele.id}},
+								redirect, '{{request.get_host}}', '{% url 'houses' %}', 
+								false, false)">
+						UPDATE
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+{% endblock %}

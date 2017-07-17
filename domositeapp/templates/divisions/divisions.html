@@ -1,0 +1,96 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}Divisions{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">
+		Divisions
+		<button class="btn btn-primary button-form js-tooltip pull-right"
+			id="addDivisionButton" data-toggle="modal" data-target="#divisionCreationModal">
+			Add Division
+		</button>
+	</h1>
+	{% if data.divisions %}
+		<button class="btn btn-xs btn-danger button-form js-tooltip"
+			id="deleteBtn" data-toggle="modal" data-target="#deleteModal" 
+			data-original-title="Make a DELETE request on the Division resource" disabled>
+			DELETE
+		</button>
+		<table class="table table-hover">
+			<thead>
+				<th><input id="masterCheckInpt" 
+								type="checkbox" onclick="markAllForDeletion(this.checked)"></input>
+					</th>	
+				<th>ID</th>
+				<th>Division Name</th>
+				<th>Area</th> 
+	 			<th>Nº of Devices</th> 
+			</thead>
+			{% for ele in data.divisions %}
+				<tr>
+					<td><input class="checkInpt" 
+								type="checkbox" onclick="markForDeletion(this)"></input>
+					</td>	
+					<td>{{ele.id}}</td>
+					<td>
+						<a href="{% url 'divisionDetail' pk=ele.id %}">{{ele.name}}</a>
+					</td>
+					<td>{{ele.area}}</td>
+					<td>{{ele.device_count}}</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h4 class="text-center" id="info_text">Are you sure you want to delete this divisions?</h4>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button class="btn btn-danger" 
+								onclick="deleteMarkedElements('division')">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="alert alert-info" role="alert">
+			You don't have any division yet. Please add one.
+		</div>	
+	{% endif %}
+	<div class="modal fade" id="divisionCreationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					{% for ele in data.form %}
+						<div class="form-group">
+							<label for="{{ele.auto_id}}" class="control-label">{{ele.label}}</label>
+							<div>
+								{{ele}}
+								<span id="division-{{ele.name}}-err" class="help-block err-div">
+									<strong></strong>
+								</span>
+							</div>
+						</div>
+					{% endfor %}
+					<div>
+						<span id="division-non_field_errors-err" class="help-block err-div">
+							<strong></strong>
+						</span>
+					</div>			
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-primary" 
+							onclick="newElement('division', '{{request.get_host}}', 
+									'{% url 'divisions' %}', false)">Add Division</button>					</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+{% endblock %}

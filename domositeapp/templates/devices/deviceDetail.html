@@ -1,0 +1,323 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}{{data.form.name.value}}{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">
+		{{data.form.name.value}}
+		<button  class="btn btn-danger button-form js-tooltip pull-right delete-btn" 
+			{% if data.ele.active %} disabled {% endif %}
+			title="" data-toggle="modal" data-target="#deleteModal">
+			DELETE
+		</button>
+	</h1>
+	<table class="hidden-xs table">
+		<thead>
+			<th>Universal ID</th>
+			<th>Local ID</th>
+			<th>Device Address</th>
+			<th>Device Server</th>
+			<th>Device Type</th>
+			<th>Device Timeout</th>
+			<th>Device State</th>
+		</thead>
+		<tr>
+			<td>{{data.ele.id}}</td>
+			<td>{{data.ele.local_id}}</td>
+			<td>{{data.ele.address}}</td>
+			<td>{{data.ele.server}}</td>
+			<td>{{data.ele.device_type}}</td>
+			<td>{{data.ele.timeout}}</td>
+			<td id="stateCol-{{data.ele.id}}">
+				{% if data.ele.active %}
+					<span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span>
+					<span>Running</span>
+				{% else %}
+					<span class="glyphicon glyphicon-remove" style="color: red;" aria-hidden="true"></span>
+					<span>Down</span>
+				{% endif %}
+			</td>
+		</tr>
+	</table>
+	<table class="hidden-xs table">
+		<thead>
+			<th>Device Name</th>
+			<th>Division</th> 
+			<th>Services</th>
+		</thead>
+		<tr id="deviceUpdateForm">
+			{% for ele in data.form %}
+				<td>
+					{{ele}}
+					<span id="device-{{ele.name}}-err" class="help-block err-div">
+						<strong></strong>
+					</span>
+					<span id="device-non_field_errors-err" class="help-block err-div">
+						<strong></strong>
+					</span>
+				</td>
+			{% endfor %}
+		</tr>
+	</table>
+
+	<div class="visible-xs">
+		<label class="col-xs-6">Universal ID:</label><p class="col-xs-6">{{data.ele.id}}</p>
+		<label class="col-xs-6">Local ID:</label><p class="col-xs-6">{{data.ele.local_id}}</p>
+		<label class="col-xs-6">Device Address:</label><p class="col-xs-6">{{data.ele.address}}</p>
+		<label class="col-xs-6">Device Server:</label><p class="col-xs-6">{{data.ele.server}}</p>
+		<label class="col-xs-6">Device Type:</label><p class="col-xs-6">{{data.ele.device_type}}</p>
+		<label class="col-xs-6">Device Timeout:</label><p class="col-xs-6">{{data.ele.timeout}}</p>
+		<label class="col-xs-6">Device State:</label>
+		<p class="col-xs-6" id="stateCol-{{data.ele.id}}">
+			{% if data.ele.active %}
+				<span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span>
+				<span>Running</span>
+			{% else %}
+				<span class="glyphicon glyphicon-remove" style="color: red;" aria-hidden="true"></span>
+				<span>Down</span>
+			{% endif %}
+		</p>
+		<label class="col-xs-6">Device Name:</label>
+		<p class="col-xs-6">
+			{% with data.form.name as ele %}
+				{{ele}}
+				<span id="device-{{ele.name}}-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+				<span id="device-non_field_errors-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+			{% endwith %}
+		</p>
+		<label class="col-xs-6">Device Division:</label>
+		<p class="col-xs-6">
+			{% with data.form.division as ele %}
+				{{ele}}
+				<span id="device-{{ele.name}}-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+				<span id="device-non_field_errors-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+			{% endwith %}
+		</p>
+		<label class="col-xs-6">Device Services:</label>
+		<p class="col-xs-6">
+			{% with data.form.services as ele %}
+				{{ele}}
+				<span id="device-{{ele.name}}-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+				<span id="device-non_field_errors-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+			{% endwith %}
+		</p>
+	</div>
+
+	<div class="col-md-12 col-xs-12">
+		<button class="btn btn-primary button-form js-tooltip col-md-offset-4 col-md-3 col-xs-offset-2 col-xs-8"
+			title="" data-toggle="modal" data-target="#updateModal">
+			UPDATE
+		</button>
+	</div>
+
+	<hr class="col-md-12 col-xs-12">
+	<div class="col-md-12 col-xs-12">
+		<h2 class="page-header">Properties</h2>
+		<div id="prop_setter_div" class="col-md-8">
+			{% for key, form in data.property_forms.items %}
+			<div class="form-group row">
+				{% if form.enum_setter %}
+					<label for="{{form.enum_setter.label}}" 
+						   class="col-md-2 col-xs-3 control-label">{{form.enum_setter.label}}:</label>
+					<div id="{{form.enum_setter.field.widget.attrs.id}}-div" class="enum">
+						<div class="col-md-2 col-xs-3">Down</div>
+						<div>
+							{% for radio in form.enum_setter %}
+								<div class="col-md-2 col-xs-3">
+									{{radio}}
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+				{% else %}
+					<label for="{{form.scalar_setter.label}}" class="col-md-2 col-xs-3 control-label">{{form.scalar_setter.label}}:</label>
+					<div id="{{form.scalar_setter.field.widget.attrs.id}}-div" class="scalar">
+						<div class="col-md-2 col-xs-3">Down</div>
+						{% if not form.scalar_setter.field.widget.attrs.readonly %}
+							<div class="col-md-2 col-xs-3">
+								{{form.scalar_setter}}
+							</div>
+						{% endif %}
+					</div>
+					{% if not form.scalar_setter.field.widget.attrs.readonly %}
+						<button class="btn btn-primary col-md-2 col-xs-3 update-btn"
+								{% if not data.ele.active %} disabled {% endif %}
+								onclick="updateEnumProperty('{{form.scalar_setter.label}}', document.getElementById('property-{{form.scalar_setter.label}}').value, '{{data.ele.id}}'); blockPropertySetterInpts(true)">
+							UPDATE
+						</button>
+					{% endif %}
+				{% endif%}
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	
+	<hr class="col-md-12 col-xs-12">
+	
+	<div class="col-md-12 col-xs-12">
+		<h2 class="page-header">Property Records History</h2>
+		
+		<div class="col-md-2 col-xs-3">
+			# of results:
+			<select onchange="fetchResultsByNumber(this.value, '{{data.ele.id}}')" class="">
+				<option value="20">20</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+				<option value="200">200</option>
+			</select>
+		</div>
+
+		<div class="col-md-10 col-xs-3">
+			Start:
+			<select id="start_day" class="day_select">
+			</select>
+			<select id="start_month" class="month_select">
+			</select>
+			<select id="start_year" class="year_select">
+			</select>
+
+			End:
+			<select id="end_day" class="day_select">
+			</select>
+			<select id="end_month" class="month_select">
+			</select>
+			<select id="end_year" class="year_select">
+			</select>
+			<button class="btn btn-default" onclick="fetchResultsByDate('{{data.ele.id}}')">Fetch</button>
+		</div>
+		
+		<div class="col-md-12 col-xs-12" style="height: 470px; overflow: scroll;">
+			<table class="table table-hover">
+				<thead>
+					<th>#</th>
+					<th>New State</th>
+					<th onclick="sortHistoryTable(3)">Source</th>
+					<th onclick="sortHistoryTable(4)">Timestamp</th>
+				</thead>
+				<tbody id="history-table">
+					{% for ch in data.history %}
+						<tr>
+							<td>{{forloop.counter}}</td>
+							<td>{{ch.new_state}}</td>
+							<td>{{ch.source}}</td>
+							<td>{{ch.timestamp}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h4 class="text-center" id="info_text">Are you sure you want to delete this Device?</h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-danger delete-btn" 
+						onclick="deleteElement('device', {{data.ele.id}},
+								redirect, '{{request.get_host}}', '{% url 'devices' %}', false)">
+						DELETE
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h4 class="text-center" id="info_text">Are you sure you want to update this Device?</h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-primary" 
+						onclick="updateElement('device', {{data.ele.id}}, 
+								redirect, '{{request.get_host}}', '{% url 'devices' %}',
+								false, true)">
+						UPDATE
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/prophistfunc.js' %}"></script>
+
+<script type="text/javascript">
+	
+	function updateEnumProperty(propertyName, propertyValue, deviceId){
+		
+		var req = new XMLHttpRequest();
+		req.onreadystatechange = function() {
+			if (this.readyState == 4){
+				if (this.status == 200) {
+					// window.alert("Property Updated");
+					return true;
+				}else{
+					var resp = JSON.parse(this.responseText);
+					window.alert(resp["error_msg"]);
+					return false;
+				}
+			}
+		};
+		var dict = {};
+		dict[propertyName] = propertyValue;
+		var data = JSON.stringify(dict);
+
+		// window.alert(data);
+		req.open("PATCH", get_API_uri("device")+deviceId+"/state/", true);
+		var csrftoken = getCookie("csrftoken");
+		req.setRequestHeader("Content-type", "application/json");
+		req.setRequestHeader("X-CSRFToken", csrftoken);
+		req.setRequestHeader("accept", "application/json");
+		req.send(data);
+	}
+
+	function blockPropertySetterInpts(block){
+		var div = document.getElementById("prop_setter_div");
+		var inpts = div.getElementsByTagName("input");
+		var btns = div.getElementsByTagName("button");
+
+		for(var i=0; i<inpts.length; i++){
+			if(block){
+				inpts[i].setAttribute("disabled", "True");
+			}else{
+				inpts[i].removeAttribute("disabled");
+			}
+		}
+		for(var i=0;i<btns.length; i++){
+			if(block){
+				btns[i].setAttribute("disabled", "True");
+			}else{
+				btns[i].removeAttribute("disabled");
+			}
+		}
+	}
+
+	document.onload = checkElementState("{{data.ele.id}}", "device", updateAllDeviceDetailView);
+	document.onload = createSelect();
+
+	window.setInterval(checkElementState, 2000, "{{data.ele.id}}", "device", updateAllDeviceDetailView);
+
+</script>
+{% endblock %}

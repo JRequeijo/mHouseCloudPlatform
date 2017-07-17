@@ -1,0 +1,448 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}Configurations{% endblock %}
+
+{% block content_data %}
+<h2 class="page-header">
+    Device Types
+    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" 
+            data-target="#devicetypeCreationModal"
+            {% if not user.is_authenticated %} disabled {% endif %}>
+            New Device Type
+    </button>
+</h2>
+<table class="table table-hover">
+    <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Properties</th>
+    </thead>
+    {% for ele in data.configs.device_types%}
+        <tr>
+            <td>{{ele.id}}</td>
+            <td>{{ele.name}}</td>
+            <td>{{ele.properties}}</td>
+            <td>
+                {% if "user" not in ele.keys %} 
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" 
+                            data-target="#deleteModal" 
+                            onclick="markConfigForDeletion(this, 'devicetype')">
+                            DELETE
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<hr class="col-md-12 col-xs-12">
+
+<h2 class="page-header">
+    Property Types
+    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" 
+            data-target="#proptypeCreationModal"
+            {% if not user.is_authenticated %} disabled {% endif %}>
+            New Property Type
+    </button>
+</h2>
+<table class="table table-hover">
+    <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Access Mode</th>
+        <th>Value Type Class</th>
+        <th>Value Type ID</th>
+    </thead>
+    {% for ele in data.configs.property_types%}
+        <tr>
+            <td>{{ele.id}}</td>
+            <td>{{ele.name}}</td>
+            <td>{{ele.access_mode}}</td>
+            <td>{{ele.value_type_class}}</td>
+            <td>{{ele.value_type_id}}</td>
+            <td>
+                {% if "user" not in ele.keys %} 
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" 
+                            data-target="#deleteModal" 
+                            onclick="markConfigForDeletion(this, 'proptype')">
+                            DELETE
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<hr class="col-md-12 col-xs-12">
+
+<h2 class="page-header">Value Types</h1>
+<h3>
+    Scalars:
+    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" 
+            data-target="#scalarCreationModal"
+            {% if not user.is_authenticated %} disabled {% endif %}>
+            New Scalar
+    </button>
+</h3>
+<table class="table table-hover">
+    <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Units</th>
+        <th>Default Value</th>
+        <th>Min. Value</th>
+        <th>Max. Value</th>
+        <th>Step</th>
+    </thead>
+    {% for ele in data.configs.value_types.scalars%}
+        <tr>
+            <td>{{ele.id}}</td>
+            <td>{{ele.name}}</td>
+            <td>{{ele.units}}</td>
+            <td>{{ele.default_value}}</td>
+            <td>{{ele.min_value}}</td>
+            <td>{{ele.max_value}}</td>
+            <td>{{ele.step}}</td>
+            <td>
+                {% if "user" not in ele.keys %} 
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" 
+                            data-target="#deleteModal" 
+                            onclick="markConfigForDeletion(this, 'scalar')">
+                            DELETE
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<h3>
+    Enumerateds:
+    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" 
+            data-target="#enumCreationModal"
+            {% if not user.is_authenticated %} disabled {% endif %}>
+            New Enumerated
+    </button>
+</h3>
+<table class="table table-hover">
+    <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Choices</th>
+        <th>Default Value Choice ID</th>
+    </thead>
+    {% for ele in data.configs.value_types.enums%}
+        <tr>
+            <td>{{ele.id}}</td>
+            <td>{{ele.name}}</td>
+            <td>{{ele.choices}}</td>
+            <td>{{ele.default_value}}</td>
+            <td>
+                {% if "user" not in ele.keys %} 
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" 
+                            data-target="#deleteModal" 
+                            onclick="markConfigForDeletion(this, 'enum')">
+                            DELETE
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<h3>
+    Choices:
+    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" 
+            data-target="#choiceCreationModal" 
+            {% if not user.is_authenticated %} disabled {% endif %}>
+            New Choice
+    </button>
+</h3>
+<table class="table table-hover">
+    <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Value</th>
+    </thead>
+    {% for ele in data.configs.value_types.choices %}
+        <tr>
+            <td>{{ele.id}}</td>
+            <td>{{ele.name}}</td>
+            <td>{{ele.value}}</td>
+            <td>
+                {% if "user" not in ele.keys %} 
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" 
+                            data-target="#deleteModal" 
+                            onclick="markConfigForDeletion(this, 'choice')">
+                            DELETE
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<hr class="col-md-12 col-xs-12">
+
+<h2 class="page-header">Core Services</h1>
+<table class="table table-hover">
+    <thead>
+        <th>ID</th>
+        <th>Name</th>
+    </thead>
+    {% for ele in data.configs.services%}
+        <tr>
+            <td>{{ele.id}}</td>
+            <td>{{ele.name}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<div class="modal fade" id="devicetypeCreationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New Device Type</h4>
+            </div>
+            <div class="modal-body">
+                {% for ele in data.dev_type_form %}
+                    <div class="form-group">
+                        <label for="{{ele.auto_id}}" class="control-label">{{ele.label}}</label>
+                        <div>
+                            {{ele}}
+                            <span id="devicetype-{{ele.name}}-err" class="help-block err-div">
+                                <strong></strong>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div>
+                    <span id="devicetype-non_field_errors-err" class="help-block err-div">
+                        <strong></strong>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" 
+                        onclick="newElement('devicetype', '{{request.get_host}}', 
+                                '{% url 'configs' %}' , false)">Create</button>                  </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="proptypeCreationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New Property Type</h4>
+            </div>
+            <div class="modal-body">
+                {% for ele in data.prop_type_form %}
+                    <div class="form-group">
+                        <label for="{{ele.auto_id}}" class="control-label">{{ele.label}}</label>
+                        <div>
+                            {{ele}}
+                            <span id="proptype-{{ele.name}}-err" class="help-block err-div">
+                                <strong></strong>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div>
+                    <span id="proptype-non_field_errors-err" class="help-block err-div">
+                        <strong></strong>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" 
+                        onclick="newElement('proptype', '{{request.get_host}}', 
+                                '{% url 'configs' %}' , false)">Create</button>    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="scalarCreationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New Scalar</h4>
+            </div>
+            <div class="modal-body">
+                {% for ele in data.scalar_form %}
+                    <div class="form-group">
+                        <label for="{{ele.auto_id}}" class="control-label">{{ele.label}}</label>
+                        <div>
+                            {{ele}}
+                            <span id="scalar-{{ele.name}}-err" class="help-block err-div">
+                                <strong></strong>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div>
+                    <span id="scalar-non_field_errors-err" class="help-block err-div">
+                        <strong></strong>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" 
+                        onclick="newElement('scalar', '{{request.get_host}}', 
+                                '{% url 'configs' %}' , false)">Create</button>    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="enumCreationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New Enumerated</h4>
+            </div>
+            <div class="modal-body">
+                {% for ele in data.enum_form %}
+                    <div class="form-group">
+                        <label for="{{ele.auto_id}}" class="control-label">{{ele.label}}</label>
+                        <div>
+                            {{ele}}
+                            <span id="enum-{{ele.name}}-err" class="help-block err-div">
+                                <strong></strong>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div>
+                    <span id="enum-non_field_errors-err" class="help-block err-div">
+                        <strong></strong>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" 
+                        onclick="newElement('enum', '{{request.get_host}}', 
+                                '{% url 'configs' %}' , false)">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="choiceCreationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New Choice</h4>
+            </div>
+            <div class="modal-body">
+                {% for ele in data.choice_form %}
+                    <div class="form-group">
+                        <label for="{{ele.auto_id}}" class="control-label">{{ele.label}}</label>
+                        <div>
+                            {{ele}}
+                            <span id="choice-{{ele.name}}-err" class="help-block err-div">
+                                <strong></strong>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div>
+                    <span id="choice-non_field_errors-err" class="help-block err-div">
+                        <strong></strong>
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" 
+                        onclick="newElement('choice', '{{request.get_host}}', 
+                                '{% url 'configs' %}' , false)">Create</button>                </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 class="text-center" id="info_text">Are you sure you want to delete this?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger" 
+                        onclick="deleteConfig()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+<script type="text/javascript">
+    function actualizeDefaultValues(select){
+        var opts_selected = []
+        var options = select && select.options;
+        var opt;
+
+        for(var i=0; i<options.length; i++){
+            opt = options[i];
+
+            if(opt.selected){
+                opts_selected.push(opt);
+            }
+        }
+
+        var def_val_select = document.getElementById("id_enum_def_val");
+        while(def_val_select.firstChild){
+            def_val_select.removeChild(def_val_select.firstChild);
+        }
+
+        for(i=0; i<opts_selected.length; i++){
+            def_val_select.appendChild(opts_selected[i].cloneNode(true));
+        }
+    }
+
+    function markConfigForDeletion(button, type){
+        var marked = document.getElementsByClassName("deletion-marked");
+        
+        while(marked.length > 0){
+            marked[0].removeAttribute("name");
+            marked[0].removeAttribute("class");
+        }
+        
+        var tr = button.parentElement.parentElement;
+        tr.setAttribute("class", "deletion-marked");
+        tr.setAttribute("name", type);
+    }
+
+    function deleteConfig(){
+        var trows = document.getElementsByClassName("deletion-marked");
+        if(trows.length > 1){
+            window.alert("FATAL ERROR OCCURED: deletion-marked mark must appear only once");
+            return;
+        }
+        var tr = trows[0];
+
+        var id = tr.firstElementChild.innerHTML;
+        var configName = tr.getAttribute("name");
+
+        deleteElement(configName, id);
+        var par = tr.parentElement;
+        par.removeChild(tr);
+        closeModal("deleteModal");
+    }
+    
+</script>
+{% endblock%}

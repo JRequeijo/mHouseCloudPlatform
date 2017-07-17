@@ -1,0 +1,43 @@
+{% extends 'layouts/mainlayout.html' %}
+{% load staticfiles %}
+
+{% block custom_styles %}
+  	<link href="{% static 'css/home.css' %}" rel="stylesheet">
+    
+    <style type="text/css">
+        #wellcome{
+            color: #fff;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .menubutton{
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="row">
+        {% block content_data %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="container">
+    <hr class="">
+    <footer class="footer">
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>&copy; 2017 mHouse &middot; 
+            <a href="{% url 'help' %}">Documentation</a> &middot; 
+            <a href="{% url 'homepage' %}#about">About</a>  &middot; 
+            <a href="{% url 'register' %}">Register</a> &middot; 
+            <a href="{% url 'login' %}">Login</a>
+        </p>
+    </footer>
+</div>
+{% endblock %}
+

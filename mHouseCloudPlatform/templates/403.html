@@ -1,0 +1,14 @@
+{% extends 'layouts/home_layout.html' %}
+{% load static %}
+{% block title %} mHouse Framework {% endblock %}
+
+{% block content_data %}
+<div class="container" style="padding-top: 70px;">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 text-center">
+            <h1>You don't have authorization to see the requested resource.</h1>
+            <img class="img-rounded" src="{% static 'img/inv_att.png' %}" alt="Forbidden" height="350">
+        </div>
+    </div>
+</div>
+{% endblock %}

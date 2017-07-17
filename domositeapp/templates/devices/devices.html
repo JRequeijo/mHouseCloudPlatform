@@ -1,0 +1,62 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}Devices{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">
+		Devices
+	</h1>
+	{% if data.devices %}
+		<table class="table table-hover">
+			<thead>
+				<th>Universal ID</th>
+				<th>Device Name</th>
+				<th>Device Address</th>
+				<th>Device Server</th>
+				<th class="hidden-xs">Device Type</th>
+				<th class="hidden-xs">Division</th> 
+				<th class="hidden-xs">Services</th>
+				<th>Status</th>
+			</thead>
+			{% for ele in data.devices %}
+				<tr class="elementRow">
+					<td>{{ele.id}}</td>
+					<td>
+						<a href="{% url 'deviceDetail' pk=ele.id %}">{{ele.name}}</a>
+					</td>
+					<td>{{ele.address}}</td>
+					<td>{{ele.server}}</td>
+					<td class="hidden-xs">{{ele.device_type}}</td>
+					{% if ele.division %}
+						<td class="hidden-xs">{{ele.division}}</td>
+					{% else %}
+						<td class="hidden-xs" style="color: red;" >Unassigned</td>
+					{% endif %}
+						<td class="hidden-xs">{{ele.services}}</td>
+					<td id="stateCol-{{ele.id}}">
+						{% if ele.active %}
+							<span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span>
+							<span>Running</span>
+						{% else %}
+							<span class="glyphicon glyphicon-remove" style="color: red;" aria-hidden="true"></span>
+							<span>Down</span>
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<div class="alert alert-info" role="alert">
+			You don't have any device yet. Please add one.
+		</div>	
+	{% endif %}
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+<script type="text/javascript">
+	document.onload = checkAllElementsState("device");
+	window.setInterval(checkAllElementsState, 10000, "device");
+</script>
+{% endblock %}

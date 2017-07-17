@@ -1,0 +1,20 @@
+{% extends 'layouts/home_layout.html' %}
+
+{% block title %}Password Recovery{% endblock %}
+
+{% load staticfiles %}
+{% block content_data %}
+<div class="container text-center" style="padding-top: 70px;">
+	<div class="starter-template">
+		<h1>Password Recovery</h1>
+		<img alt="Incoming" src="{% static 'img/conf_inc.png' %}">
+		<p class="lead">
+			You will now receive an email with a link to recover your password.
+		</p>
+		<small>If you don't see any email in your inbox please check your spam. 
+			If you're still with problems click 
+			<a href="{% url 'passrecv' %}">here</a>.
+		</small>
+	</div>
+</div>
+{% endblock %}

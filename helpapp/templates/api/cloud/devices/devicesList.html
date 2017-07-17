@@ -1,0 +1,120 @@
+{% extends 'layouts/help_layout.html' %}
+
+{% block title %} mHouse Framework - Help {% endblock %}
+
+{% block content_data %}
+<h1 class="page-header">Online Cloud HTTP RESTful API:</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">URI</h3>
+    </div>
+    <div class="panel-body">
+        devices/ [?] [server=<strong><em>server_id</em></strong>] [&] 
+        [division=<strong><em>division_id</em></strong>] [&] 
+        [type=<strong><em>device_type_id</em></strong>] [&] 
+        [services=<strong><em>services_ids_list</em></strong>]
+    </div>
+</div>
+
+<h3 class="page-header">Method: GET</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Get all the Devices for the authenticated user.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Query Filters</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li><strong>server</strong> - The ID of the Server from which the results must be retrieved.</li>
+            <li><strong>division</strong> - The ID of the Division from which the results must be retrieved.</li>
+            <li><strong>type</strong> - The ID of the Device Type of the results that must be retrieved.</li>
+            <li><strong>services</strong> - A non-empty list of Service IDs from which the results must be retrieved .</li>
+        </ul>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>200 OK - JSON object with all the Devices.</li>
+        </ul>
+    </div>
+</div>
+
+<h3 class="page-header">Method: POST</h3>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Action</h3>
+    </div>
+    <div class="panel-body">
+        Add (create) a new Device for the authenticated user.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Request Body</h3>
+    </div>
+    <div class="panel-body">
+        <p>JSON describing the new Device.</p>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h5 class="panel-title">Required Fields</h5>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li><strong>name</strong> - The name of the new Device.</li>
+                    <li><strong>address</strong> - The IP address of the new Device. 
+                    This field must be unique for the user. This field must be unique 
+                    for each Server.</li>
+                    <li><strong>device_type</strong> - The ID of the Device Type that 
+                    is the type of the new Device.</li>
+                    <li><strong>server</strong> - The ID of the Server to which the new 
+                    Device is connected.</li>
+                    <li><strong>local_id</strong> - The ID of the new Device on the Server.
+                     This ID is local to each Server.</li>
+                    <li><strong>timeout</strong> - The maximum time interval, in seconds, 
+                    within which the device must update its state. If a Device don’t 
+                    update its state within this interval, it is considered to be offline 
+                    (down).</li>
+                </ul>
+            </div>
+
+            <div class="panel-heading">
+                <h5 class="panel-title">Optional Fields</h5>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li><strong>division</strong> - The ID of the Division to which the 
+                    new Device will belong.</li>
+                    <li><strong>services</strong> - A list of Service IDs to which the new 
+                    Device will belong.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Possible Response Codes and Body</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>200 OK - JSON object with all the Devices of the authenticated user.</li>
+            <li>400 BAD REQUEST - Something is wrong with the request.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

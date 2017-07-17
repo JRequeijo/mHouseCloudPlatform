@@ -1,0 +1,137 @@
+{% extends 'layouts/help_layout.html' %}
+
+{% block title %} mHouse Framework - Help {% endblock %}
+
+{% block content_data %}
+<h1 class="page-header">Online Cloud HTTP RESTful API:</h1>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p>All the URIs that belong to the Online Cloud HTTP RESTful API start with <strong>api/</strong>, 
+            so for example, if we want to access the houses list for the current logged in user, 
+            we must send a GET request to the URL <strong>http://127.0.0.1:8080/api/houses</strong>. 
+            To work with the API, an user must be authorized with the Basic Auth authorization process,
+            which requires the user email (as the username) and a password.</p>
+
+        <p>Note: as stated above, every URI that follows must be preceded with <strong>api/</strong>.</p>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">General Possible Response Codes and Bodies</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>Every error response have a description body that can be one of the Error Formats.	
+            <li>For every request to the Cloud API the client must provide a valid Basic 
+                Authorization header (based on the user email and password) and a valid X-CSRFToken
+                header with the CSRF token provided from a cookie (this cookie can be setted with a GET 
+                or HEAD request to a not authentication protected URL like /login). If this informations 
+                are not provided or if the use is unauthorized to perform the request, a 403 FORBIDDEN 
+                error response with a detail message will be returned.</li>
+            
+            <li>If the request method is not allowed for the requested resource a 405 METHOD NOT ALLOWED 
+                error response with a detail message will be returned.</li>
+            <li>If the “Content-Type” header is different from “application/json”, a 415 UNSUPPORTED 
+                MEDIA TYPE error response with a detail message will be returned.</li>
+            <li>If some other unacceptable header is included in the request, a 406 NOT ACCEPTABLE error 
+                response with a detail message will be returned.</li>
+            <li>If the request is being made to a resource that doesn’t exist on the database or to a 
+                resource which the user doesn’t have access to (ex: request a House that belongs to another
+                user), a 404 NOT FOUND error response with a detail message will be returned.</li>
+            <li>To other bad formatted requests 400 BAD REQUEST error responses with the respective detail 
+                message bodies will be returned.</li>
+            <li>If something is wrong with the Cloud Server, a 500 INTERNAL SERVER ERROR is also possible as 
+                an error response.</li>
+        </ul>
+    </div>
+</div>
+<a name="configs"></a>
+<h2 class="page-header">URIs:</h2>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Configuration Related URIs</h3>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{% url 'configsList' %}">configs/</a> <span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'deviceTypesList' %}">configs/device_types/</a> <span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'deviceTypesDetail' %}">configs/device_types/<strong><em>device_type_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'propTypesList' %}">configs/property_types/</a><span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'propTypesDetail' %}">configs/property_types/<strong><em>property_type_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'scalarsList' %}">configs/scalars/</a><span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'scalarsDetail' %}">configs/scalars/<strong><em>scalar_value_type_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'enumsList' %}">configs/enums/</a><span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'enumsDetail' %}">configs/enums/<strong><em>enum_value_type_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'choicesList' %}">configs/choices/</a><span class="badge">POST</span><span class="badge">GET</span></li>
+            <a name="spaces"></a>
+            <li class="list-group-item"><a href="{% url 'choicesDetail' %}">configs/choices/<strong><em>choice_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">GET</span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Space Related URIs</h3>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{% url 'housesList' %}">houses/</a> <span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'housesDetail' %}">houses/<strong><em>house_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">PUT/PATCH</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'areasList' %}">areas/</a> <span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'areasDetail' %}">areas/<strong><em>area_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">PUT/PATCH</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'divisionsList' %}">divisions/</a> <span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'divisionsDetail' %}">divisions/<strong><em>division_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">PUT/PATCH</span><span class="badge">GET</span></li>
+            <a name="services"></a>
+            <li class="list-group-item"><a href="{% url 'divisionDevices' %}">divisions/<strong><em>division_id</em></strong>/devices/</a><span class="badge">GET</span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Service Related URIs</h3>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{% url 'servicesList' %}">services/</a> <span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'servicesDetail' %}">services/<strong><em>service_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">PUT/PATCH</span><span class="badge">GET</span></li>
+            <a name="serversdevices"></a>
+            <li class="list-group-item"><a href="{% url 'serviceDevices' %}">services/<strong><em>service_id</em></strong>/devices/</a><span class="badge">GET</span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Servers and Devices Related URIs</h3>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{% url 'serversList' %}">servers/</a> <span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'serversDetail' %}">servers/<strong><em>server_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">PUT/PATCH</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'serverDevices' %}">servers/<strong><em>server_id</em></strong>/devices/</a><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'serverState' %}">servers/<strong><em>server_id</em></strong>/state/</a><span class="badge">GET</span></li>
+
+            <li class="list-group-item"><a href="{% url 'devicesList' %}">devices/</a> <span class="badge">POST</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'devicesDetail' %}">devices/<strong><em>device_id</em></strong>/</a><span class="badge">DELETE</span><span class="badge">PUT/PATCH</span><span class="badge">GET</span></li>
+            <li class="list-group-item"><a href="{% url 'deviceState' %}">devices/<strong><em>device_id</em></strong>/state/</a><span class="badge">PUT/PATCH</span><span class="badge">GET</span></li>
+            <a name="history"></a>
+            <li class="list-group-item"><a href="{% url 'deviceHistory' %}">devices/<strong><em>device_id</em></strong>/history/</a><span class="badge">GET</span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Actions History Related URIs</h3>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{% url 'actionsHistory' %}">history/</a> <span class="badge">GET</span></li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

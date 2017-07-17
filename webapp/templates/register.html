@@ -1,0 +1,47 @@
+{% extends 'layouts/home_layout.html' %}
+
+{% block title %}mHouse Framework - Register{% endblock %}
+
+{% block content_data %}
+<div class="container" style="padding-top: 70px;">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">Register</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" method="POST" action="{% url 'register' %}">
+                    	{% csrf_token %}
+                    	
+                    	{% for ele in form %}
+	                        <div class="form-group {{ ele.errors|yesno:' has-error, '}}">
+	                            <label for="{{ele.auto_id}}" class="col-md-4 control-label">{{ele.label}}</label>
+	
+	                            <div class="col-md-6">
+	                                {{ele}}
+	                                {% if ele.errors %}
+			                        	<span class="help-block">
+		                                    <strong>{{ ele.errors.as_text }}</strong>
+		                                </span>
+			                        {% endif %}
+	                            </div>
+	                        </div>
+						{% endfor %}
+                        
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Register
+                                </button>
+
+                                <a class="btn btn-link" href="{% url 'login' %}">
+                                    <small>If you're already registed, login here.</small>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

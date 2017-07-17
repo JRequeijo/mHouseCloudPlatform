@@ -1,0 +1,112 @@
+{% extends 'layouts/home_layout.html' %}
+{% load static%}
+{% block title %} mHouse Framework {% endblock %}
+
+{% block content_data %}
+<div class="container marketing" style="padding-top: 80px;">
+    <div class="jumbotron" style="background-color: rgba(212, 225, 245, 0.28);">
+        <div class="row featurette">
+            <div class="col-md-7 col-md-push-5">
+                <h2 class="featurette-heading">mHouse Framework.</h2>
+                <h3><span class="text-muted">A Domotic Framework for the Internet of Things.</span></h3>
+                <p class="lead">Easily access your home automation devices from anywhere in the world and at any time.</p>
+                <p><a class="btn btn-primary btn-lg" href="#more" role="button">Learn more</a> <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Sign up</a></p>
+            </div>
+            <div class="col-md-5 col-md-pull-7">
+                <img class="featurette-image img-responsive center-block" src="{% static 'img/mHouse_logo_big.png'%}" alt="Generic placeholder image">
+            </div>
+            <a name="more"></a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h1 class="page-header text-center">Three Main Components</h1>
+</div>
+<div class="container marketing">
+
+    <div class="row">
+        <div class="col-lg-4">
+            <img class="img-rounded" src="{% static 'img/cloud.png'%}" alt="Generic placeholder image" width="140" height="140">
+            <h2>Cloud Platform</h2>
+            <p>Top Abstraction Layer</p>
+            <p>Available from anywhere and at anytime</p>
+            <p><a class="btn btn-default" href="{% url 'cloudplatformMain' %}" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-lg-4">
+            <img class="img-rounded" src="{% static 'img/homeserver.png'%}" alt="Generic placeholder image" width="140" height="140">
+            <h2>Home Server</h2>
+            <p>Middle Abstraction Layer</p>
+            <p>Two-way communications ensured</p>
+            <p><a class="btn btn-default" href="{% url 'homeserverMain' %}" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-lg-4">
+            <img class="img-rounded" src="{% static 'img/endpoints.png'%}" alt="Generic placeholder image" width="140" height="140">
+            <h2>Endpoints Network</h2>
+            <p>Bottom Abstraction Layer</p>
+            <p>Configurable to different physical details</p>
+            <p><a class="btn btn-default" href="{% url 'endpointsMain' %}" role="button">View details &raquo;</a></p>
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Cloud Based. <span class="text-muted">Everywhere and Everytime Availability.</span></h2>
+            <p class="lead">A cloud-based web application with top-level a web responsive friendly interface 
+                and a RESTful API ensure the abstraction of details, storage of devices data and easy access to domotic 
+                devices. It also allows the access from other automation services which can process all the data collected
+                by the devices on the mHouse Framework.
+                <a href="{% url 'cloudplatformMain' %}">More info</a>
+            </p>
+        </div>
+        <div class="col-md-5">
+            <img class="featurette-image img-responsive center-block" src="{% static 'img/cloud-big.png'%}" alt="Generic placeholder image">
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7 col-md-push-5">
+            <h2 class="featurette-heading">Home Server Mediated. <span class="text-muted">Both Upstream and Downstream Communications Ensured.</span></h2>
+            <p class="lead">A middleware/gateway application between the Cloud Platform and the domotic 
+                devices, where all the Framework's system is built upon. Devices are represented here as resources, 
+                allowing the two-way communication by using the RESTful API provided by the Cloud Platform and by 
+                providing its own RESTful APIs as well, namely an HTTP based one and a CoAP based one.
+                <a href="{% url 'homeserverMain' %}">More info</a>
+            </p>
+        </div>
+        <div class="col-md-5 col-md-pull-7">
+            <img class="featurette-image img-responsive center-block" src="{% static 'img/homeserver-big.png'%}" alt="Generic placeholder image">
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Endpoints for Low-Level Logic. <span class="text-muted">Simple and Economic Devices upon the Physical Interface.</span></h2>
+            <p class="lead">Endpoint configurable applications, running on the device with the attached physical 
+                sensors and actuators, abstract the whole physical low-level logic details. All the communications
+                are ensured by the base application code that can be configured accordingly
+                to each sensor, actuactor or physical scenario and all the interactions with the upper system layers
+                are made through the RESTful CoAP API provided by the Home Server component.
+                <a href="{% url 'endpointsMain' %}">More info</a>
+            </p>
+        </div>
+        <div class="col-md-5">
+            <img class="featurette-image img-responsive center-block" src="{% static 'img/endpoints-big.png'%}" alt="Generic placeholder image">
+        </div>
+    </div>
+    <hr>
+    <div><a name="about"></a>
+        <h1 class="page-header">About</h1>
+        <p>The mHouse Framework, which name stands for "my House Framework" and is pronounced "mouse framework", 
+            is an open source Domotic Framework for the Internet of Things, developed by Jos&eacute; Diogo Requeijo Dias
+            during his master thesis on Eletrical and Computer Engeneering at Instituto Superior T&eacute;cnico, Lisbon.
+        </p>
+    </div>
+</div>  
+{% endblock %}

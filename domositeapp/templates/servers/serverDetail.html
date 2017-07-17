@@ -1,0 +1,178 @@
+{% extends 'layouts/dashboard_layout.html' %}
+{% load staticfiles %}
+
+{% block title%}{{data.form.name.value}}{% endblock %}
+
+{% block content_data %}
+	<h1 class="page-header">
+		{{data.form.name.value}}
+		<button  class="btn btn-danger button-form js-tooltip pull-right delete-btn" 
+			{% if data.ele.active %} disabled {% endif %}
+			title="" data-toggle="modal" data-target="#deleteModal">
+			DELETE
+		</button>
+	</h1>
+	<table class="hidden-xs table">
+		<thead>
+			<th>Server ID</th>
+			<th>CoAP Server Address</th>
+			<th>CoAP Server Port</th>
+			<th>Multicast Opt.</th>
+			<th>Proxy Address</th>
+			<th>Proxy Port</th>
+			<th>Server State</th>
+			<th>Server Name</th>
+		</thead>
+		<tr id="serverUpdateForm">
+			<td>{{data.ele.id}}</td>
+			<td>{{data.ele.coap_address}}</td>
+			<td>{{data.ele.coap_port}}</td>
+			<td>{{data.ele.multicast}}</td>
+			<td>{{data.ele.proxy_address}}</td>
+			<td>{{data.ele.proxy_port}}</td>
+			<td id="stateCol-{{data.ele.id}}">
+				{% if data.ele.active %}
+					<span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span>
+					<span>Running</span>
+				{% else %}
+					<span class="glyphicon glyphicon-remove" style="color: red;" aria-hidden="true"></span>
+					<span>Down</span>
+				{% endif %}
+			</td>
+			{% for ele in data.form %}
+				<td>
+					{{ele}}
+					<span id="server-{{ele.name}}-err" class="help-block err-div">
+						<strong></strong>
+					</span>
+					<span id="server-non_field_errors-err" class="help-block err-div">
+						<strong></strong>
+					</span>
+				</td>
+			{% endfor %}
+			<td>
+				<button class="btn btn-primary button-form js-tooltip" 
+					title="" data-toggle="modal" data-target="#updateModal">
+					UPDATE
+				</button>
+			</td>
+		</tr>
+	</table>
+
+	<div class="visible-xs">
+		<label class="col-xs-6">Server ID:</label><p class="col-xs-6">{{data.ele.id}}</p>
+		<label class="col-xs-6">CoAP Server Address:</label><p class="col-xs-6">{{data.ele.coap_address}}</p>
+		<label class="col-xs-6">CoAP Server Port:</label><p class="col-xs-6">{{data.ele.coap_port}}</p>
+		<label class="col-xs-6">Multicast Opt.:</label><p class="col-xs-6">{{data.ele.multicast}}</p>
+		<label class="col-xs-6">Proxy Address:</label><p class="col-xs-6">{{data.ele.proxy_address}}</p>
+		<label class="col-xs-6">Proxy Port:</label><p class="col-xs-6">{{data.ele.proxy_port}}</p>
+		<label class="col-xs-6">Server State:</label>
+		<p class="col-xs-6" id="stateCol-{{data.ele.id}}">
+			{% if data.ele.active %}
+				<span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span>
+				<span>Running</span>
+			{% else %}
+				<span class="glyphicon glyphicon-remove" style="color: red;" aria-hidden="true"></span>
+				<span>Down</span>
+			{% endif %}
+		</p>
+		<label class="col-xs-6">Server Name:</label>
+		<p class="col-xs-6">
+			{% for ele in data.form %}
+				{{ele}}
+				<span id="server-{{ele.name}}-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+				<span id="server-non_field_errors-err" class="help-block err-div">
+					<strong></strong>
+				</span>
+			{% endfor %}
+		</p>
+		<button class="col-xs-offset-2 col-xs-8 btn btn-primary button-form js-tooltip" 
+			title="" data-toggle="modal" data-target="#updateModal">
+			UPDATE
+		</button>
+	</div>
+
+	<div class="col-md-12 col-xs-12">
+		<hr>
+
+		<h3 class="page-header">Server Devices</h3>
+		{% if data.devices %}
+			<table class="table table-hover">
+				<thead>
+					<th>Universal ID</th>
+					<th>Device Name</th>
+					<th>Device Address</th>
+					<th>Device Type</th>
+					<th class="hidden-xs">Division</th> 
+					<th class="hidden-xs">Services</th>
+				</thead>
+				{% for ele in data.devices %}
+					<tr class="elementRow">
+						<td>{{ele.id}}</td>
+						<td>
+							<a href="{% url 'deviceDetail' pk=ele.id %}">{{ele.name}}</a>
+						</td>
+						<td>{{ele.address}}</td>
+						<td>{{ele.device_type}}</td>
+						{% if ele.division %}
+							<td class="hidden-xs">{{ele.division}}</td>
+						{% else %}
+							<td class="hidden-xs">Unsigned</td>
+						{% endif %}
+						<td class="hidden-xs">{{ele.services}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% else %}
+			<div class="alert alert-info" role="alert">
+				You don't have any device related to this server.
+			</div>	
+		{% endif %}
+	</div>
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h4 class="text-center" id="info_text">Are you sure you want to delete this Server?</h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-danger delete-btn" 
+						onclick="deleteElement('server', {{data.ele.id}},
+								redirect, '{{request.get_host}}', '{% url 'servers' %}', false)">
+						DELETE
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h4 class="text-center" id="info_text">Are you sure you want to update this Server?</h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-primary" 
+						onclick="updateElement('server', {{data.ele.id}}, 
+								redirect, '{{request.get_host}}', '{% url 'servers' %}',
+								false, true)">
+						UPDATE
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{% static 'js/functions.js' %}"></script>
+<script type="text/javascript">
+	document.onload = checkElementState("{{data.ele.id}}", "server", updateGlyphiconsAndButtons);
+	window.setInterval(checkElementState, 2000, "{{data.ele.id}}", "server", updateGlyphiconsAndButtons);
+</script>
+{% endblock %}
