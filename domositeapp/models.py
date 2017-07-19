@@ -32,7 +32,7 @@ class Server(models.Model):
     def state(self):
         url = "http://"+str(self.proxy_address)+":"+str(self.proxy_port)+"/"
         try:
-            resp = requests.get(url, timeout=5)
+            resp = requests.get(url, timeout=20)
             if resp.status_code == 200:
                 resp = json.loads(resp.text)
                 resp["status"] = "running"
