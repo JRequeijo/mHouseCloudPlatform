@@ -162,6 +162,7 @@ class DetailJSONView(CustomServersView, generics.RetrieveUpdateDestroyAPIView):
                 return Response(data=data, status=status.HTTP_504_GATEWAY_TIMEOUT)
 
         if fromserver:
+            instance.last_access = timezone.now()
             last_active = instance.active
             instance.active = True
             instance.save()
@@ -206,6 +207,7 @@ class StateJSONView(CustomServersView, generics.GenericAPIView):
         
         if fromserver:
             if data["status"] == "running":
+                server.last_access = timezone.now()
                 last_active = server.active
                 server.active = True
                 server.save()
