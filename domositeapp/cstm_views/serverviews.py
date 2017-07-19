@@ -216,7 +216,7 @@ def periodic_state_check():
             for s in Server.objects.all():
                 s.state()
             
-            time.sleep(10)
+            time.sleep(25)
             print "checking servers"
         except:
             pass
