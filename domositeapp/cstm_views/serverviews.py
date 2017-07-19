@@ -196,6 +196,33 @@ class StateJSONView(CustomServersView, generics.GenericAPIView):
             resp = {"status":"down"}
         return Response(resp)
 
+    def patch(self, request, *args, **kwargs):
+        server = self.get_object()
+        data = request.data.copy()
+        try:
+            fromserver = bool(request.GET.get("fromserver"))
+        except KeyError:
+            fromserver = False
+        
+        if fromserver:
+            js = json.loads(data)
+            if js["status"] == "running":
+                last_active = server.active
+                server.active = True
+                server.save()
+
+                if server.active and not last_active:
+                    act = LogAction(action=LogAction.STAT_UP,\
+                                    description="Server with ID "+str(server.id)+" is now Running",\
+                                    instance_class=LogAction.SERVER,\
+                                    instance_id=int(server.id),\
+                                    user=server.user)
+                    act.save()
+        
+        return Response()
+
+    
+
 class ServerDevicesJSONView(CustomServersView, generics.GenericAPIView):
     renderer_classes = [JSONRenderer,]
 
