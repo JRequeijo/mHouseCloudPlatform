@@ -217,7 +217,7 @@ def periodic_state_check():
                 s.state()
             
             time.sleep(10)
-            # print "checking servers\n"
+            print "checking servers"
         except:
             pass
 

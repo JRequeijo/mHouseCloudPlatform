@@ -553,6 +553,6 @@ def periodic_state_check():
                 d.state
             
             time.sleep(10)
-            # print "checking devices\n"
+            print "checking devices"
         except:
             pass
