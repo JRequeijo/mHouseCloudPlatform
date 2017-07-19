@@ -55,7 +55,8 @@ class Server(models.Model):
                                 user=self.user)
                 act.save()
                 raise Exception
-        except:
+        except Exception as err:
+            print "ERROR: ", err
             resp = {"status":"down"}
             last_active = self.active
             self.active = False
