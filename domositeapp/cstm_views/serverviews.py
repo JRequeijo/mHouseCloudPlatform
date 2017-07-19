@@ -205,8 +205,7 @@ class StateJSONView(CustomServersView, generics.GenericAPIView):
             fromserver = False
         
         if fromserver:
-            js = json.loads(data)
-            if js["status"] == "running":
+            if data["status"] == "running":
                 last_active = server.active
                 server.active = True
                 server.save()
@@ -243,7 +242,7 @@ def periodic_state_check():
             for s in Server.objects.all():
                 s.state()
             
-            time.sleep(25)
+            time.sleep(20)
             print "checking servers"
         except:
             pass
