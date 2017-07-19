@@ -31,6 +31,7 @@ class Server(models.Model):
         unique_together = (("coap_address", "user"),)
     
     def state(self):
+        print self.last_access
         if timezone.now() >= self.last_access + timedelta(seconds=20):
             last_active = self.active
             self.active = False
