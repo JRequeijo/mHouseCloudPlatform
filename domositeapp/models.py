@@ -37,6 +37,9 @@ class Server(models.Model):
         if timezone.now() >= self.last_access + timedelta(seconds=self.timeout):
             last_active = self.active
             self.active = False
+            for d in self.device_set.all():
+                d.active = False
+                d.save()
             self.save()
             if not self.active and last_active:
                 act = LogAction(action=LogAction.STAT_DOWN,\
