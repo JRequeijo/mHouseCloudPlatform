@@ -412,6 +412,7 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
             url = "http://"+str(device.server.proxy_address)+":"+str(device.server.proxy_port)+"/devices/"\
                         +str(device.local_id)+"/state"
             print url
+            print "DATA: ",request.data
             try:
                 resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=10)
                 data = json.loads(resp.text)
