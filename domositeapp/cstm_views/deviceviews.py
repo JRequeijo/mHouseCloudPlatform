@@ -413,7 +413,7 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
                         +str(device.local_id)+"/state"
             print url
             if not request.data:
-                return Response(data={"detail":"A json body like {\"property_name\":\"property_value\" must be provided}"}, status=resp.status_code)
+                return Response(data={"detail":"A json body like {\"property_name\":\"property_value\" must be provided}"}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=10)
                 data = json.loads(resp.text)
