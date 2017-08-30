@@ -143,7 +143,7 @@ class DetailJSONView(CustomServersView, generics.RetrieveUpdateDestroyAPIView):
             url = "http://"+str(instance.proxy_address)+":"+str(instance.proxy_port)+"/info"
             try:
                 req_data = {"name": data["name"]}
-                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=5)
+                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=10)
 
                 data = json.loads(resp.text)
                 if resp.status_code != 200:

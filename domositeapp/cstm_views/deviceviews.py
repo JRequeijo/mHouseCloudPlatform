@@ -273,7 +273,7 @@ class DetailJSONView(CustomDevicesView, generics.RetrieveUpdateDestroyAPIView):
             url = "http://"+str(instance.server.proxy_address)+":"+str(instance.server.proxy_port)+"/devices/"+str(instance.local_id)
             try:
                 req_data = {"name": data["name"]}
-                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=5)
+                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=10)
 
                 resp_data = json.loads(resp.text)
                 if resp.status_code != 200:
@@ -297,7 +297,7 @@ class DetailJSONView(CustomDevicesView, generics.RetrieveUpdateDestroyAPIView):
 
             try:
                 req_data = data["services"]
-                resp = requests.put(url+"/services", data=json.dumps(req_data), headers=headers, timeout=5)
+                resp = requests.put(url+"/services", data=json.dumps(req_data), headers=headers, timeout=10)
 
                 resp_data = json.loads(resp.text)
                 if resp.status_code != 200:
@@ -413,7 +413,7 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
                         +str(device.local_id)+"/state"
             print url
             try:
-                resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=5)
+                resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=10)
                 data = json.loads(resp.text)
 
                 print "RESP CODE:"+str(resp.status_code)+"\n"
