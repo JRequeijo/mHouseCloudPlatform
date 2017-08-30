@@ -113,6 +113,7 @@ class ListJSONView(CustomDivisionsView, generics.ListCreateAPIView):
 
 class DetailJSONView(CustomDivisionsView, generics.RetrieveUpdateDestroyAPIView):
     #all come from generics.RetrieveUpdateDestroyAPIView
+    renderer_classes = [JSONRenderer,]
     pass
 
 class DivisionDevicesJSONView(CustomDivisionsView, generics.GenericAPIView):

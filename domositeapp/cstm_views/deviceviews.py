@@ -483,6 +483,11 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
                     act.save()
                 return Response(data=data, status=status.HTTP_504_GATEWAY_TIMEOUT)
 
+            except ValidationError as err:
+                return Response(data={"detail":err}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except:
+                return Response(data={"detail":"Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     def put(self, request, *args, **kwargs):
         return self.patch(request, *args, **kwargs)

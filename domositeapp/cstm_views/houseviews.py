@@ -110,4 +110,5 @@ class ListJSONView(CustomHousesView, generics.ListCreateAPIView):
 
 class DetailJSONView(CustomHousesView, generics.RetrieveUpdateDestroyAPIView):
     #all come from generics.RetrieveUpdateDestroyAPIView
+    renderer_classes = [JSONRenderer,]
     pass
