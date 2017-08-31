@@ -383,15 +383,29 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
         if fromserver:
             print "Fromserver"
             last_active = device.active
+            server_last_active = device.server.active
             device.active = True
+            device.server.active = True
             device.last_access = timezone.now()
+            device.server.last_access = timezone.now()
+
+            device.server.save()
             device.save()
+
             if device.active and not last_active:
                 act = LogAction(action=LogAction.STAT_UP,\
                                 description="Device with ID "+str(device.id)+" is now Running",\
                                 instance_class=LogAction.DEVICE,\
                                 instance_id=int(device.id),\
                                 user=self.request.user)
+                act.save()
+            
+            if device.server.active and not server_last_active:
+                act = LogAction(action=LogAction.STAT_UP,\
+                                    description="Server with ID "+str(device.server.id)+" is now Running",\
+                                    instance_class=LogAction.SERVER,\
+                                    instance_id=int(device.server.id),\
+                                    user=self.request.user)
                 act.save()
             
             new_state = {}
