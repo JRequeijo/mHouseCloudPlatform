@@ -176,11 +176,14 @@ class DeviceTypesListView(CustomDeviceTypesView, generics.ListCreateAPIView):
             return Response(err.detail, status=err.status_code)
 
 class DeviceTypesDetailView(CustomDeviceTypesView, generics.RetrieveDestroyAPIView):
-
     def delete(self, request, *args, **kwargs):
-        resp = self.destroy(request, *args, **kwargs)
-        thread.start_new_thread(update_configs_on_servers, (self, "DEVICE_TYPES"))
-        return resp
+        instance = self.get_object()
+        if instance.device_set.count() == 0:
+            self.perform_destroy(instance)
+            thread.start_new_thread(update_configs_on_servers, (self, "DEVICE_TYPES"))
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
 #
 ### PROPERTY TYPES ###
@@ -228,9 +231,13 @@ class PropertyTypesListView(CustomPropertyTypesView, generics.ListCreateAPIView)
 
 class PropertyTypesDetailView(CustomPropertyTypesView, generics.RetrieveDestroyAPIView):
     def delete(self, request, *args, **kwargs):
-        resp = self.destroy(request, *args, **kwargs)
-        thread.start_new_thread(update_configs_on_servers, (self, "PROPERTY_TYPES"))
-        return resp
+        instance = self.get_object()
+        if instance.devicetype_set.count() == 0:
+            self.perform_destroy(instance)
+            thread.start_new_thread(update_configs_on_servers, (self, "PROPERTY_TYPES"))
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
 #
 ############ VALUE TYPES #########
@@ -279,9 +286,13 @@ class ScalarListView(CustomScalarView, generics.ListCreateAPIView):
 class ScalarDetailView(CustomScalarView, generics.RetrieveDestroyAPIView):
     
     def delete(self, request, *args, **kwargs):
-        resp = self.destroy(request, *args, **kwargs)
-        thread.start_new_thread(update_configs_on_servers, (self, "SCALAR_TYPES"))
-        return resp
+        instance = self.get_object()
+        if PropertyType.objects.filter(user=self.request.user, value_type_class="SCALAR", value_type_id=instance.id).count() == 0:
+            self.perform_destroy(instance)
+            thread.start_new_thread(update_configs_on_servers, (self, "SCALAR_TYPES"))
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 #
 ### ENUMS ###
 class CustomEnumView():
@@ -327,9 +338,13 @@ class EnumListView(CustomEnumView, generics.ListCreateAPIView):
 
 class EnumDetailView(CustomEnumView, generics.RetrieveDestroyAPIView):
     def delete(self, request, *args, **kwargs):
-        resp = self.destroy(request, *args, **kwargs)
-        thread.start_new_thread(update_configs_on_servers, (self, "ENUM_TYPES"))
-        return resp
+        instance = self.get_object()
+        if PropertyType.objects.filter(user=self.request.user, value_type_class="ENUM", value_type_id=instance.id).count() == 0:
+            self.perform_destroy(instance)
+            thread.start_new_thread(update_configs_on_servers, (self, "ENUM_TYPES"))
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 #
 #
 ### CHOICES ###
@@ -375,4 +390,10 @@ class ChoiceListView(CustomChoicesView, generics.ListCreateAPIView):
 
 class ChoiceDetailView(CustomChoicesView, generics.RetrieveDestroyAPIView):
     #all come from generics.RetrieveUpdateDestroyAPIView
-    pass
+    def delete(self, request, *args, **kwargs): 
+        instance = self.get_object()
+        if instance.enumvaluetype_set.count() == 0:
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)

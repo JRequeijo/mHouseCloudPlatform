@@ -5,7 +5,7 @@
 
 {% block content_data %}
 	<h1 class="page-header">My Account Settings</h1>
-    <div>
+    <div class="container col-md-12">
         <div class="checkbox">
             <label>
                 <input type="checkbox" name="present_analytics_on_dash"
@@ -22,6 +22,35 @@
         </div>
         <button class="btn btn-primary col-md-offset-4 col-md-3"
                 onclick="update_settings(this.parentElement)">Save Settings</button>
+    </div>
+
+    <hr class="col-md-12">
+
+    <h1 class="page-header col-md-12">Deleting Account</h1>
+    <div class="alert alert-danger col-md-10" role="alert">
+        <a class="js-tooltip" 
+            data-toggle="modal" 
+            data-target="#deleteModal">Click here</a>
+             to delete your mHouse User Account. 
+        Be very careful because it is an irreversible action!
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <h4 class="text-center" id="info_text"><p>Are you sure you want to delete this your account? </p>
+                            <p><strong>It is an irreversible action!!</strong></p></h4>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-danger" 
+                            onclick="deleteAccount()">Delete</button>					
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -62,6 +91,29 @@
         req.setRequestHeader("Content-type", "application/json");
         req.setRequestHeader("X-CSRFToken", csrftoken);
         req.send(data);
+    }
+
+    function deleteAccount(){
+        
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+            if (this.readyState == 4){
+                if (this.status == 200) {
+                    window.alert("Account Successfully Deleted");
+                    return window.location.replace("{% url 'login' %}");
+                }else{
+                    window.alert("Error");
+                    return false;
+                }
+            }
+        };
+
+        // window.alert(data);
+        req.open("DELETE", "/settings/", true);
+        var csrftoken = getCookie("csrftoken");
+        req.setRequestHeader("Content-type", "application/json");
+        req.setRequestHeader("X-CSRFToken", csrftoken);
+        req.send();
     }
 </script>
 {% endblock%}

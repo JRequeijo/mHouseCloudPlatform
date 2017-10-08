@@ -4,8 +4,38 @@
 
 {% block content_data %}
 <h1 class="page-header">Help Page</h1>
-<p><a href="{% url 'cloudplatformMain' %}">Cloud Platform Documentation</a></p>
-<p><a href="{% url 'homeserverMain' %}">Home Server Documentation</a></p>
-<p><a href="{% url 'endpointsMain' %}">Endpoints Network Documentation</a></p>
-<p><a href="{% url 'apiMainHelp' %}">mHouse RESTful API Help</a></p>
+
+<p>The mHouse Framework is an high-level RESTful solution, based on DomoBus, that provides an 
+open set of specifications to the overall system architecture and its RESTful interfaces, 
+allowing the users/developers to build generic and expandable domotic system solutions. 
+It is capable to integrate devices with very different characteristics, requirements, 
+and base technologies, and also to access, control and manage such devices from anywhere 
+and at any time. Moreover, it is a modular solution which can not only be used as a 
+whole/”closed” system, but users/developers can also integrate parts of it on other 
+systems/solutions, or even the other way around, to integrate parts of other 
+systems/solutions on it. Therefore, as it is based on standard and open technologies 
+and paradigms like CoAP, JSON and REST, and as each one of its constituent modules 
+is fully interoperable through this technologies, it is ideal to build big domotic 
+systems included on the IoT, which can be based not only on the mHouse Framework, 
+but also on other relevant technologies that could bring some other advantages to 
+the final wished solution.</p>
+<p>The framework allows users/developers to connect all devices with a large set of attached 
+sensors and/or actuators, and to access and control them, i.e. users can retrieve and store 
+the data collected by those devices, and send commands to those devices as well, making use 
+of the mHouse Cloud Platform where all resources appear in an autonomic way, after the 
+installation/employment of the framework. Moreover, the mHouse Framework allows 
+users/developers to organize their devices and house facilities by location/space, 
+by creating and managing virtual entities like Houses, Areas and Divisions, to where 
+the Devices can be assigned and also organized by their functionalities, by creating 
+and managing virtual Services to which the Devices can by assigned as well. Finally, the 
+mHouse Framework provides a solution that always monitors the several connected devices, 
+making sure that all the information about their failures and working behaviour is properly 
+registered and presented to the user, making it even possible to build alarmistic 
+applications where the users can be notified about device failures or misbehaviour.</p>
+
+<p><a href="">Cloud Platform Documentation</a></p>
+<p><a href="">Home Server Documentation</a></p>
+<p><a href="">Endpoints Network Documentation</a></p>
+<p><a href="">mHouse RESTful APIs</a></p>
+
 {% endblock %}

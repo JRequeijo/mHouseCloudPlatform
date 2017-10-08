@@ -438,10 +438,29 @@
         var id = tr.firstElementChild.innerHTML;
         var configName = tr.getAttribute("name");
 
-        deleteElement(configName, id);
-        var par = tr.parentElement;
-        par.removeChild(tr);
+        sendDeleteReq(configName, id, tr);
         closeModal("deleteModal");
+    }
+
+    function sendDeleteReq(elementName, elementId, tableRow){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+            if (this.readyState == 4){
+                if(this.status == 204) {
+                    var par = tableRow.parentElement;
+                    par.removeChild(tableRow);
+                }else if(this.status == 406){
+                    window.alert("This configuration cannot be deleted because others depend on it. Erase those first in order to be able to delete this.");
+                }else{
+                    console.error("ERROR ("+String(this.status)+"):"+this.responseText);
+                }
+            }
+        };
+        req.open("DELETE", get_API_uri(elementName)+String(elementId)+"/", true);
+        var csrftoken = getCookie('csrftoken');
+        req.setRequestHeader("Content-type", "application/json");
+        req.setRequestHeader("X-CSRFToken", csrftoken);
+        req.send();
     }
     
 </script>

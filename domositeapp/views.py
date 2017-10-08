@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from domositeapp.models import LogAction, CustomService
+from domositeapp.models import *
 from rest_framework.response import Response
 from domositeapp.serializers import *
 from rest_framework import generics, mixins
@@ -22,6 +22,7 @@ from domositeapp.renderers import CustomHTMLRenderer
 from webapp.models import AccountSettings
 from webapp.serializers import AccountSettingsSerializer
 
+from datetime import datetime
 ##DASH MAIN VIEW####
 class Dashboard(LoginRequiredMixin, APIView):
 
@@ -39,6 +40,19 @@ class Dashboard(LoginRequiredMixin, APIView):
 
         if setts.present_analytics_on_dash:
             data["analytics"] = True
+            n_actions_per_time = []
+
+            n_actions_per_time.append(LogAction.objects.filter(user=self.request.user,\
+                                                                timestamp__range=(datetime.now()-timedelta(minutes=120), datetime.now()-timedelta(minutes=115))).count())
+            i = 110
+            while i != 0:
+                n_actions_per_time.append(LogAction.objects.filter(user=self.request.user,\
+                                                                    timestamp__range=(datetime.now()-timedelta(minutes=i+5), datetime.now()-timedelta(minutes=i-5))).count())
+                i-=10
+            
+            n_actions_per_time.append(LogAction.objects.filter(user=self.request.user,\
+                                                                    timestamp__range=(datetime.now()-timedelta(minutes=5), datetime.now())).count())
+            data["n_actions_per_time"] = n_actions_per_time
 
         return Response(data)
 
@@ -219,7 +233,7 @@ class MainHistoryJSON(APIView):
         except ValidationError as err:
             return Response({"detail":err.message}, status=status.HTTP_400_BAD_REQUEST)
 
-class MyAccountSettings(LoginRequiredMixin, generics.RetrieveUpdateAPIView):
+class MyAccountSettings(LoginRequiredMixin, generics.RetrieveUpdateDestroyAPIView):
 
     renderer_classes = [CustomHTMLRenderer,]
     template_name = "./settings.html"
@@ -232,16 +246,57 @@ class MyAccountSettings(LoginRequiredMixin, generics.RetrieveUpdateAPIView):
         resp = self.retrieve(request, *args, **kwargs)
         return Response({"settings":resp.data}, status=resp.status_code)
 
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response({"info":"Account Successfully Deleted"}, status=status.HTTP_200_OK)
+
 class Analytics(LoginRequiredMixin, APIView):
 
     renderer_classes = [CustomHTMLRenderer,]
     template_name = "./analytics.html"
 
     def get(self, request, *args, **kwargs):
-        servs = CustomService.objects.filter(user=request.user)
-        serv_list = {}
-        for s in servs:
-            serv_list[s.name] = s.device_set.count()
+        n_actions_per_time = []
 
-        return Response({"devices_per_service":serv_list})
+        n_actions_per_time.append(LogAction.objects.filter(user=self.request.user,\
+                                                            timestamp__range=(datetime.now()-timedelta(minutes=120), datetime.now()-timedelta(minutes=115))).count())
+        i = 110
+        while i != 0:
+            n_actions_per_time.append(LogAction.objects.filter(user=self.request.user,\
+                                                                timestamp__range=(datetime.now()-timedelta(minutes=i+5), datetime.now()-timedelta(minutes=i-5))).count())
+            i-=10
+        
+        n_actions_per_time.append(LogAction.objects.filter(user=self.request.user,\
+                                                                timestamp__range=(datetime.now()-timedelta(minutes=5), datetime.now())).count())
+
+        n_devices = LogAction.objects.filter(user=self.request.user, instance_class=LogAction.DEVICE).count()
+        n_servers = LogAction.objects.filter(user=self.request.user, instance_class=LogAction.SERVER).count()
+        n_houses = LogAction.objects.filter(user=self.request.user, instance_class=LogAction.HOUSE).count()
+        n_areas = LogAction.objects.filter(user=self.request.user, instance_class=LogAction.AREA).count()
+        n_divisions = LogAction.objects.filter(user=self.request.user, instance_class=LogAction.DIVISION).count()
+        n_services = LogAction.objects.filter(user=self.request.user, instance_class=LogAction.SERVICE).count()
+
+        n_create = LogAction.objects.filter(user=self.request.user, action=LogAction.CREATE).count()
+        n_read = LogAction.objects.filter(user=self.request.user, action=LogAction.READ).count()
+        n_update = LogAction.objects.filter(user=self.request.user, action=LogAction.UPDATE).count()
+        n_delete = LogAction.objects.filter(user=self.request.user, action=LogAction.DELETE).count()
+        n_error = LogAction.objects.filter(user=self.request.user, action=LogAction.ERROR).count()
+        n_down = LogAction.objects.filter(user=self.request.user, action=LogAction.STAT_DOWN).count()
+        n_up = LogAction.objects.filter(user=self.request.user, action=LogAction.STAT_UP).count()
+
+        return Response({"n_actions_per_time":n_actions_per_time,\
+                         "n_devices":n_devices,\
+                         "n_server":n_servers,\
+                         "n_houses":n_houses,
+                         "n_areas":n_areas,
+                         "n_divisions":n_divisions,\
+                         "n_services":n_services,\
+                         "n_create":n_create,\
+                         "n_read":n_read,\
+                         "n_update":n_update,
+                         "n_delete":n_delete,
+                         "n_error":n_error,
+                         "n_down":n_down,
+                         "n_up":n_up})
        
