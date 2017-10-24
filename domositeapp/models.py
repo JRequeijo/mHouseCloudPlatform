@@ -24,46 +24,23 @@ class Server(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
 
+
     active = models.BooleanField(default=True)
+    last_access = models.DateTimeField(auto_now_add=True)
+
+    timeout = models.IntegerField(blank=False, null=False)
 
     class Meta:
         unique_together = (("coap_address", "user"),)
     
     def state(self):
-        url = "http://"+str(self.proxy_address)+":"+str(self.proxy_port)+"/"
-        try:
-            resp = requests.get(url, timeout=5)
-            if resp.status_code == 200:
-                resp = json.loads(resp.text)
-                resp["status"] = "running"
-                last_active = self.active
-                self.active = True
-                self.save()
-
-                if self.active and not last_active:
-                    act = LogAction(action=LogAction.STAT_UP,\
-                                    description="Server with ID "+str(self.id)+" is now Running",\
-                                    instance_class=LogAction.SERVER,\
-                                    instance_id=int(self.id),\
-                                    user=self.user)
-                    act.save()
-            else:
-                act = LogAction(action=LogAction.ERROR,\
-                                description="Getting server with ID "+str(self.id)+" result with an error",\
-                                instance_class=LogAction.SERVER,\
-                                instance_id=int(self.id),\
-                                user=self.user)
-                act.save()
-                raise Exception
-        except:
-            resp = {"status":"down"}
+        if timezone.now() >= self.last_access + timedelta(seconds=self.timeout):
             last_active = self.active
             self.active = False
             for d in self.device_set.all():
                 d.active = False
                 d.save()
             self.save()
-
             if not self.active and last_active:
                 act = LogAction(action=LogAction.STAT_DOWN,\
                                 description="Server with ID "+str(self.id)+" is Down",\

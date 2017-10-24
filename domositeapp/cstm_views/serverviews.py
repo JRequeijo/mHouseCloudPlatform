@@ -3,6 +3,7 @@ from django.db.models import Count
 from django.shortcuts import redirect
 from django.db import IntegrityError
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
 
 
 from rest_framework import permissions, generics, serializers, status
@@ -142,7 +143,7 @@ class DetailJSONView(CustomServersView, generics.RetrieveUpdateDestroyAPIView):
             url = "http://"+str(instance.proxy_address)+":"+str(instance.proxy_port)+"/info"
             try:
                 req_data = {"name": data["name"]}
-                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=5)
+                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=10)
 
                 data = json.loads(resp.text)
                 if resp.status_code != 200:
@@ -162,6 +163,7 @@ class DetailJSONView(CustomServersView, generics.RetrieveUpdateDestroyAPIView):
                 return Response(data=data, status=status.HTTP_504_GATEWAY_TIMEOUT)
 
         if fromserver:
+            instance.last_access = timezone.now()
             last_active = instance.active
             instance.active = True
             instance.save()
@@ -196,6 +198,33 @@ class StateJSONView(CustomServersView, generics.GenericAPIView):
             resp = {"status":"down"}
         return Response(resp)
 
+    def patch(self, request, *args, **kwargs):
+        server = self.get_object()
+        data = request.data.copy()
+        try:
+            fromserver = bool(request.GET.get("fromserver"))
+        except KeyError:
+            fromserver = False
+        
+        if fromserver:
+            if data["status"] == "running":
+                server.last_access = timezone.now()
+                last_active = server.active
+                server.active = True
+                server.save()
+
+                if server.active and not last_active:
+                    act = LogAction(action=LogAction.STAT_UP,\
+                                    description="Server with ID "+str(server.id)+" is now Running",\
+                                    instance_class=LogAction.SERVER,\
+                                    instance_id=int(server.id),\
+                                    user=server.user)
+                    act.save()
+        
+        return Response()
+
+    
+
 class ServerDevicesJSONView(CustomServersView, generics.GenericAPIView):
     renderer_classes = [JSONRenderer,]
 
@@ -217,7 +246,7 @@ def periodic_state_check():
                 s.state()
             
             time.sleep(10)
-            # print "checking servers\n"
+            print "checking servers"
         except:
             pass
 

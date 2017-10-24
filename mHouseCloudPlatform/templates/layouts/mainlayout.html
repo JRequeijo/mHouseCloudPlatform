@@ -67,6 +67,7 @@
 
                         <!-- Right Side Of Navbar -->
                         <ul class="visible-xs nav navbar-nav navbar-right">
+                            {% url 'dashboard' as dash_url %}
                             <li><a href="{{dash_url}}">Overview</a></li>
                             
                             {% url 'history' as hist_url %}

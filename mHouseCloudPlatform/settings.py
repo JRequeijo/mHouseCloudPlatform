@@ -25,7 +25,7 @@ SECRET_KEY = 'kigb#@oive8-536vh&+qtg-pd*9pyweu-d4#rp1o4m3bp@%^ci'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'mhousecloud-env.2bdysa4bgi.eu-west-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'mhouseframework.eu-west-1.elasticbeanstalk.com']
 
 
 # Application definition
@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Lisbon'
 
 USE_I18N = True
 
@@ -123,7 +123,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
-
 
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGIN_URL = '/login/'

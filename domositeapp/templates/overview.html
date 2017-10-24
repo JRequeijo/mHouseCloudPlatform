@@ -49,17 +49,42 @@
 {% endblock %}
 
 {% block footer %}
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-	<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+
+<script>
 	var ctx = document.getElementById("myChart").getContext('2d');
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
-			labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+			labels: [new Date(new Date().getTime() - (120 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (110 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (100 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (90 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (80 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (70 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (60 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (50 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (40 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (30 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (20 * 60 * 1000)).toLocaleTimeString(),
+	                    new Date(new Date().getTime() - (10 * 60 * 1000)).toLocaleTimeString(),
+					new Date(new Date().getTime()).toLocaleTimeString()],
 			datasets: [{
-				label: '# of Votes',
-				data: [12, 19, 3, 5, 2, 3],
+				label: 'nº of actions',
+				data: [{{data.n_actions_per_time.0}},
+						{{data.n_actions_per_time.1}},
+						{{data.n_actions_per_time.2}},
+						{{data.n_actions_per_time.3}},
+						{{data.n_actions_per_time.4}},
+						{{data.n_actions_per_time.5}},
+						{{data.n_actions_per_time.6}},
+						{{data.n_actions_per_time.7}},
+						{{data.n_actions_per_time.8}},
+						{{data.n_actions_per_time.9}},
+						{{data.n_actions_per_time.10}},
+						{{data.n_actions_per_time.11}},
+						{{data.n_actions_per_time.12}}],
 				backgroundColor: [
 					'rgba(255, 99, 132, 0.2)',
 					'rgba(54, 162, 235, 0.2)',
@@ -89,5 +114,5 @@
 			}
 		}
 	});
-	</script>
+</script>
 {% endblock %}

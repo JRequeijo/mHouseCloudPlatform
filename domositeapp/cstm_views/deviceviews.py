@@ -273,7 +273,7 @@ class DetailJSONView(CustomDevicesView, generics.RetrieveUpdateDestroyAPIView):
             url = "http://"+str(instance.server.proxy_address)+":"+str(instance.server.proxy_port)+"/devices/"+str(instance.local_id)
             try:
                 req_data = {"name": data["name"]}
-                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=5)
+                resp = requests.put(url, data=json.dumps(req_data), headers=headers, timeout=10)
 
                 resp_data = json.loads(resp.text)
                 if resp.status_code != 200:
@@ -297,7 +297,7 @@ class DetailJSONView(CustomDevicesView, generics.RetrieveUpdateDestroyAPIView):
 
             try:
                 req_data = data["services"]
-                resp = requests.put(url+"/services", data=json.dumps(req_data), headers=headers, timeout=5)
+                resp = requests.put(url+"/services", data=json.dumps(req_data), headers=headers, timeout=10)
 
                 resp_data = json.loads(resp.text)
                 if resp.status_code != 200:
@@ -383,15 +383,29 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
         if fromserver:
             print "Fromserver"
             last_active = device.active
+            server_last_active = device.server.active
             device.active = True
+            device.server.active = True
             device.last_access = timezone.now()
+            device.server.last_access = timezone.now()
+
+            device.server.save()
             device.save()
+
             if device.active and not last_active:
                 act = LogAction(action=LogAction.STAT_UP,\
                                 description="Device with ID "+str(device.id)+" is now Running",\
                                 instance_class=LogAction.DEVICE,\
                                 instance_id=int(device.id),\
                                 user=self.request.user)
+                act.save()
+            
+            if device.server.active and not server_last_active:
+                act = LogAction(action=LogAction.STAT_UP,\
+                                    description="Server with ID "+str(device.server.id)+" is now Running",\
+                                    instance_class=LogAction.SERVER,\
+                                    instance_id=int(device.server.id),\
+                                    user=self.request.user)
                 act.save()
             
             new_state = {}
@@ -412,8 +426,10 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
             url = "http://"+str(device.server.proxy_address)+":"+str(device.server.proxy_port)+"/devices/"\
                         +str(device.local_id)+"/state"
             print url
+            if not request.data:
+                return Response(data={"detail":"A json body like {\"property_name\":\"property_value\" must be provided}"}, status=status.HTTP_400_BAD_REQUEST)
             try:
-                resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=5)
+                resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=10)
                 data = json.loads(resp.text)
 
                 print "RESP CODE:"+str(resp.status_code)+"\n"
@@ -482,6 +498,11 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
                                     user=self.request.user)
                     act.save()
                 return Response(data=data, status=status.HTTP_504_GATEWAY_TIMEOUT)
+
+            except ValidationError as err:
+                return Response(data={"detail":err}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except:
+                return Response(data={"detail":"Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
     def put(self, request, *args, **kwargs):
@@ -553,6 +574,6 @@ def periodic_state_check():
                 d.state
             
             time.sleep(10)
-            # print "checking devices\n"
+            print "checking devices"
         except:
             pass

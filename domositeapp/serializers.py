@@ -54,7 +54,7 @@ class ServerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Server
         fields = ("id", "name", "coap_address", "coap_port", "proxy_address", "proxy_port",\
-                    "multicast", "user", "active", "device_count")
+                    "multicast", "user", "active", "device_count", "timeout")
 
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:

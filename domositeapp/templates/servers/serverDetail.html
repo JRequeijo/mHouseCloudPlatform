@@ -20,6 +20,7 @@
 			<th>Multicast Opt.</th>
 			<th>Proxy Address</th>
 			<th>Proxy Port</th>
+			<th>Server Timeout</th>
 			<th>Server State</th>
 			<th>Server Name</th>
 		</thead>
@@ -30,6 +31,7 @@
 			<td>{{data.ele.multicast}}</td>
 			<td>{{data.ele.proxy_address}}</td>
 			<td>{{data.ele.proxy_port}}</td>
+			<td>{{data.ele.timeout}}</td>
 			<td id="stateCol-{{data.ele.id}}">
 				{% if data.ele.active %}
 					<span class="glyphicon glyphicon-ok" style="color: green;" aria-hidden="true"></span>
@@ -66,6 +68,7 @@
 		<label class="col-xs-6">Multicast Opt.:</label><p class="col-xs-6">{{data.ele.multicast}}</p>
 		<label class="col-xs-6">Proxy Address:</label><p class="col-xs-6">{{data.ele.proxy_address}}</p>
 		<label class="col-xs-6">Proxy Port:</label><p class="col-xs-6">{{data.ele.proxy_port}}</p>
+		<label class="col-xs-6">Server Timeout:</label><p class="col-xs-6">{{data.ele.timeout}}</p>
 		<label class="col-xs-6">Server State:</label>
 		<p class="col-xs-6" id="stateCol-{{data.ele.id}}">
 			{% if data.ele.active %}

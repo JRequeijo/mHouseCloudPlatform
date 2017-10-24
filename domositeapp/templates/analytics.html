@@ -4,14 +4,20 @@
 
 {% block content_data %}
 	<h1 class="page-header">Analytics</h1>
+	<h2 class="page-header">Actions from the last 2 hours</h2>
 	<div>
 		<canvas id="myChart" width="100" height="30"></canvas>
 	</div>
-    <hr class="col-md-12">
-    <div class="col-md-6">
+	<hr class="col-md-12">
+	<h2 class="page-header">Totals per type of action</h2>
+    <div class="col-md-6 col-md-offset-3">
 		<canvas id="pieChart" width="10" height="10"></canvas>
 	</div>
-    {{data.devices_per_service}}
+	<hr class="col-md-12">
+	<h2 class="page-header col-md-12">Totals per type of entity</h2>
+    <div class="col-md-12">
+		<canvas id="barChart" width="100" height="30"></canvas>
+	</div>
 {% endblock %}
 
 {% block footer %}
@@ -23,10 +29,34 @@
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
-			labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+			labels: [new Date(new Date().getTime() - (120 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (110 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (100 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (90 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (80 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (70 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (60 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (50 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (40 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (30 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (20 * 60 * 1000)).toLocaleTimeString(),
+                    new Date(new Date().getTime() - (10 * 60 * 1000)).toLocaleTimeString(),
+					new Date(new Date().getTime()).toLocaleTimeString()],
 			datasets: [{
-				label: '# of Votes',
-				data: [12, 19, 3, 5, 2, 3],
+				label: 'nº of actions',
+				data: [{{data.n_actions_per_time.0}},
+						{{data.n_actions_per_time.1}},
+						{{data.n_actions_per_time.2}},
+						{{data.n_actions_per_time.3}},
+						{{data.n_actions_per_time.4}},
+						{{data.n_actions_per_time.5}},
+						{{data.n_actions_per_time.6}},
+						{{data.n_actions_per_time.7}},
+						{{data.n_actions_per_time.8}},
+						{{data.n_actions_per_time.9}},
+						{{data.n_actions_per_time.10}},
+						{{data.n_actions_per_time.11}},
+						{{data.n_actions_per_time.12}}],
 				backgroundColor: [
 					'rgba(255, 99, 132, 0.2)',
 					'rgba(54, 162, 235, 0.2)',
@@ -61,10 +91,16 @@
 	var pieChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: {
-			labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+			labels: ["CREATE", "READ", "UPDATE", "DELETE", "ERROR", "STATUS DOWN", "STATUS UP"],
 			datasets: [{
-				label: '# of Votes',
-				data: [12, 19, 3, 5, 2, 3],
+				label: 'Type of Action',
+				data: [{{data.n_create}},
+						{{data.n_read}},
+						{{data.n_update}},
+						{{data.n_delete}},
+						{{data.n_error}},
+						{{data.n_down}},
+						{{data.n_up}}],
 				backgroundColor: [
 					'rgba(255, 99, 132, 0.2)',
 					'rgba(54, 162, 235, 0.2)',
@@ -83,6 +119,44 @@
 				],
 				borderWidth: 1
 			}]
+		}
+	});
+
+	var ctx = document.getElementById("barChart").getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'bar',
+		data: {
+			labels: ["House", "Area", "Division", "Server", "Device", "Service"],
+			datasets: [{
+				label: 'total of actions',
+				data: [{{data.n_houses}}, {{data.n_areas}}, {{data.n_divisions}}, {{data.n_servers}}, {{data.n_devices}}, {{data.n_services}}],
+				backgroundColor: [
+					'rgba(255, 99, 132, 0.2)',
+					'rgba(54, 162, 235, 0.2)',
+					'rgba(255, 206, 86, 0.2)',
+					'rgba(75, 192, 192, 0.2)',
+					'rgba(153, 102, 255, 0.2)',
+					'rgba(255, 159, 64, 0.2)'
+				],
+				borderColor: [
+					'rgba(255,99,132,1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(255, 206, 86, 1)',
+					'rgba(75, 192, 192, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+				],
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero:true
+					}
+				}]
+			}
 		}
 	});
 	</script>

@@ -90,7 +90,7 @@ class ListJSONView(CustomAreasView, generics.ListCreateAPIView):
             house_id = request.GET["house"]
             resp_q = Area.objects.filter(house=int(house_id))
             resp = AreaPresentSerializer(resp_q, many=True)
-            return Response({"divisions":resp.data})
+            return Response({"areas":resp.data})
         except:
             pass
 
@@ -106,4 +106,5 @@ class ListJSONView(CustomAreasView, generics.ListCreateAPIView):
 
 class DetailJSONView(CustomAreasView, generics.RetrieveUpdateDestroyAPIView):
     #all come from generics.RetrieveUpdateDestroyAPIView
+    renderer_classes = [JSONRenderer,]
     pass
