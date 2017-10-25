@@ -1,8 +1,14 @@
 # mHouse Cloud Platform Component
 The mHouse Framework Cloud Platform component
 
-<a href="https://github.com/JRequeijo/mHouseFramework/tree/master/docs/Cloud%20Platform">Cloud Platform Official Documentation</a>
-
+<ul>
+  <li>
+    <a href="https://github.com/JRequeijo/mHouseFramework">mHouse Framework Official Repository</a>
+  </li>
+  <li>
+    <a href="https://github.com/JRequeijo/mHouseFramework/tree/master/docs/Cloud%20Platform">Cloud Platform Official Documentation</a>
+  </li>
+</ul>
 <img src="https://github.com/JRequeijo/mHouseFramework/blob/master/docs/Cloud%20Platform/Cloud_platform_arch.png" alt="Cloud Platform Architecture">
 
 <p>
