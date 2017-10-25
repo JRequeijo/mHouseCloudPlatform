@@ -2,6 +2,8 @@
 The mHouse Framework Cloud Platform component.
 
 # General Description
+
+<img src="https://github.com/JRequeijo/mHouseFramework/blob/master/docs/Cloud%20Platform/Cloud_platform_arch.png" alt="Cloud Platform Architecture">
 <p>
 The Cloud Platform component prototype is a cloud-based web application constructed with the Django Framework which can be accessed on http://mhouseframework.eu-west-1.elasticbeanstalk. com/. As presented on Figure 24, it is composed by a web server, which holds all the application logic, an Object-Relational Mapping (ORM) Module that provides an Object-like interface to a SQL Database which, in turn, is the final subcomponent and is where the overall framework’s data is stored.
 </p>
@@ -23,4 +25,3 @@ The SQL database stores all the relevant information about the mHouse Framework 
     <a href="https://github.com/JRequeijo/mHouseFramework/tree/master/docs/Cloud%20Platform">Cloud Platform Official Documentation</a>
   </li>
 </ul>
-<img src="https://github.com/JRequeijo/mHouseFramework/blob/master/docs/Cloud%20Platform/Cloud_platform_arch.png" alt="Cloud Platform Architecture">
