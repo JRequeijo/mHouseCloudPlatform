@@ -31,6 +31,6 @@ For more detailed information check <a href="https://github.com/JRequeijo/mHouse
     <a href="https://github.com/JRequeijo/mHouseFramework/tree/master/docs/Home%20Server">Home Server Official Documentation</a>
   </li>
   <li>
-    <a href="https://github.com/JRequeijo/mHouseFramework/tree/master/docs/Endpoints">Endpoints Network Official Documentation</a>
+    <a href="https://github.com/JRequeijo/mHouseFramework/tree/master/docs/Endpoints">Endpoints Official Documentation</a>
   </li>
 </ul>
