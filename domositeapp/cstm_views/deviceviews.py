@@ -265,7 +265,7 @@ class DetailJSONView(CustomDevicesView, generics.RetrieveUpdateDestroyAPIView):
         except KeyError:
             fromserver = False
 
-        print "Fromserver: "+str(fromserver)
+        #print "Fromserver: "+str(fromserver)
 
         if (not fromserver) and instance.active:
             
@@ -318,8 +318,15 @@ class DetailJSONView(CustomDevicesView, generics.RetrieveUpdateDestroyAPIView):
             except:
                 resp_data = {"error_code": 400, "error_msg": "Services field is required"}
                 return Response(data=resp_data, status=status.HTTP_400_BAD_REQUEST)
-            
+
             new_data = {}
+            
+            try:
+                new_data["division"] = data["division"]
+            except:
+                resp_data = {"error_code": 400, "error_msg": "Division field is required"}
+                return Response(data=resp_data, status=status.HTTP_400_BAD_REQUEST)
+
             new_data["name"] = data["name"]
             new_data["services"] = data["services"]
             serializer = self.get_serializer(instance, data=new_data, partial=partial)
@@ -381,7 +388,7 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
             fromserver = False
 
         if fromserver:
-            print "Fromserver"
+            #print "Fromserver"
             last_active = device.active
             server_last_active = device.server.active
             device.active = True
@@ -421,30 +428,46 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
             p_ch.save()
             return Response()
         else:
-            print "NOT Fromserver"
+            #print "NOT Fromserver"
             headers = {"content-type":"application/json"}
             url = "http://"+str(device.server.proxy_address)+":"+str(device.server.proxy_port)+"/devices/"\
                         +str(device.local_id)+"/state"
-            print url
+            #print url
             if not request.data:
                 return Response(data={"detail":"A json body like {\"property_name\":\"property_value\" must be provided}"}, status=status.HTTP_400_BAD_REQUEST)
             try:
-                resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=10)
+                resp = requests.put(url, data=json.dumps(request.data), headers=headers, timeout=device.server.timeout)
                 data = json.loads(resp.text)
 
-                print "RESP CODE:"+str(resp.status_code)+"\n"
+                #print "RESP CODE:"+str(resp.status_code)+"\n"
                 if resp.status_code == 200:
-                    new_state = {}
-                    for prop, value in data["current_state"].iteritems():
-                        p = device.property_set.get(name=str(prop))
-                        ser = PropertySerializer(p, {"name":prop, "value":value})
-                        if ser.is_valid(raise_exception=True):
-                            new_state[prop] = value
-                            ser.save()
+                    return Response(data=device.state, status=resp.status_code)
+                    # tryout = 0
+                    # resp_get = None
+                    # while data["wanted_state"] != data["current_state"] and (tryout < 3):
+                    #     resp_get = get_device_state(device_id)
+                    #     resp_json = json.loads(resp_get)
+                    #     tryout += 1
+
+                    # if resp_json["wanted_state"] == resp_json["current_state"]:
+                    #     if not resp_get:
+                    #         resp_get = get_device_state(device_id)
+                    #     return resp_get
+                    # else:
+                    #     #print "DEVICE IS NOT RESPONDING"
+                    #     raise AppError(502, "The device is not responding")
+
+                    # new_state = {}
+                    # for prop, value in data["current_state"].iteritems():
+                    #     p = device.property_set.get(name=str(prop))
+                    #     ser = PropertySerializer(p, {"name":prop, "value":value})
+                    #     if ser.is_valid(raise_exception=True):
+                    #         new_state[prop] = value
+                    #         ser.save()
                     
-                    p_ch = PropertyChange(new_state_text=json.dumps(new_state),\
-                                        source="CLOUD", device_id=device)
-                    p_ch.save()
+                    # p_ch = PropertyChange(new_state_text=json.dumps(new_state),\
+                    #                     source="CLOUD", device_id=device)
+                    # p_ch.save()
                 elif resp.status_code == 502 or resp.status_code == 404:
                     last_active = device.active
                     device.active = False
@@ -457,7 +480,8 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
                                         instance_id=int(device.id),\
                                         user=self.request.user)
                         act.save()
-
+                    
+                    return Response(data=data, status=resp.status_code)
                 elif resp.status_code == 504:
                     last_dev_active = device.active
                     last_serv_active = device.server.active
@@ -484,7 +508,8 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
                                         user=self.request.user)
                         act.save()
 
-                return Response(data=device.state, status=resp.status_code)
+                data = {"error_code": 504, "error_msg": "Home Server is Down"}
+                return Response(data=data, status=resp.status_code)
             except requests.ConnectionError:
                 data = {"error_code": 504, "error_msg": "Home Server is Down"}
                 last_active = device.server.active

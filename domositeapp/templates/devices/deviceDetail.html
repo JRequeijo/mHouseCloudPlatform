@@ -125,7 +125,7 @@
 
 	<hr class="col-md-12 col-xs-12">
 	<div class="col-md-12 col-xs-12">
-		<h2 class="page-header">Properties</h2>
+		<h2 id="properies_setters_header" class="page-header">Properties</h2>
 		<div id="prop_setter_div" class="col-md-8">
 			{% for key, form in data.property_forms.items %}
 			<div class="form-group row">
@@ -155,7 +155,7 @@
 					{% if not form.scalar_setter.field.widget.attrs.readonly %}
 						<button class="btn btn-primary col-md-2 col-xs-3 update-btn"
 								{% if not data.ele.active %} disabled {% endif %}
-								onclick="updateEnumProperty('{{form.scalar_setter.label}}', document.getElementById('property-{{form.scalar_setter.label}}').value, '{{data.ele.id}}'); blockPropertySetterInpts(true)">
+								onclick="updateEnumProperty('{{form.scalar_setter.label}}', document.getElementById('property-{{form.scalar_setter.label}}').value, '{{data.ele.id}}'); blockPropertySetterInpts(true);">
 							UPDATE
 						</button>
 					{% endif %}
@@ -271,13 +271,18 @@
 		req.onreadystatechange = function() {
 			if (this.readyState == 4){
 				if (this.status == 200) {
-					// window.alert("Property Updated");
-					return true;
+					window.alert("Property Updated");
 				}else{
 					var resp = JSON.parse(this.responseText);
-					window.alert(resp["error_msg"]);
-					return false;
+					if(resp["error_msg"] != null){
+						window.alert(resp["error_msg"]);
+					}
+					if(resp["detail"] != null){
+						window.alert(resp["detail"]);
+					}
 				}
+				blockPropertySetterInpts(false);
+				return;
 			}
 		};
 		var dict = {};
@@ -297,6 +302,8 @@
 		var div = document.getElementById("prop_setter_div");
 		var inpts = div.getElementsByTagName("input");
 		var btns = div.getElementsByTagName("button");
+		var radio_btns = document.getElementsByClassName("radio-setter");
+
 
 		for(var i=0; i<inpts.length; i++){
 			if(block){
