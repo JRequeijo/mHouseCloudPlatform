@@ -441,7 +441,6 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
 
                 #print "RESP CODE:"+str(resp.status_code)+"\n"
                 if resp.status_code == 200:
-                    return Response(data=device.state, status=resp.status_code)
                     # tryout = 0
                     # resp_get = None
                     # while data["wanted_state"] != data["current_state"] and (tryout < 3):
@@ -457,17 +456,19 @@ class StateJSONView(CustomDevicesView, generics.GenericAPIView):
                     #     #print "DEVICE IS NOT RESPONDING"
                     #     raise AppError(502, "The device is not responding")
 
-                    # new_state = {}
-                    # for prop, value in data["current_state"].iteritems():
-                    #     p = device.property_set.get(name=str(prop))
-                    #     ser = PropertySerializer(p, {"name":prop, "value":value})
-                    #     if ser.is_valid(raise_exception=True):
-                    #         new_state[prop] = value
-                    #         ser.save()
+                    new_state = {}
+                    for prop, value in data["wanted_state"].iteritems():
+                        p = device.property_set.get(name=str(prop))
+                        ser = PropertySerializer(p, {"name":prop, "value":value})
+                        if ser.is_valid(raise_exception=True):
+                            new_state[prop] = value
+                            # ser.save()
                     
-                    # p_ch = PropertyChange(new_state_text=json.dumps(new_state),\
-                    #                     source="CLOUD", device_id=device)
-                    # p_ch.save()
+                    p_ch = PropertyChange(new_state_text=json.dumps(new_state),\
+                                        source="CLOUD", device_id=device)
+                    p_ch.save()
+
+                    return Response(data=device.state, status=resp.status_code)
                 elif resp.status_code == 502 or resp.status_code == 404:
                     last_active = device.active
                     device.active = False

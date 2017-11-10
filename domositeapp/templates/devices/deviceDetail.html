@@ -193,27 +193,11 @@
 			</select>
 			<select id="end_year" class="year_select">
 			</select>
-			<button class="btn btn-default" onclick="fetchResults('{{data.ele.id}}')">Fetch</button>
+			<button class="btn btn-default" onclick="fetchResults('{{data.ele.id}}', true)">Fetch</button>
 		</div>
 		
 		<div class="col-md-12 col-xs-12" style="height: 470px; overflow: scroll;">
-			<table class="table table-hover">
-				<thead>
-					<th>#</th>
-					<th>New State</th>
-					<th>Source</th>
-					<th>Timestamp</th>
-				</thead>
-				<tbody id="history-table">
-					{% for ch in data.history %}
-						<tr>
-							<td>{{forloop.counter}}</td>
-							<td>{{ch.new_state}}</td>
-							<td>{{ch.source}}</td>
-							<td>{{ch.timestamp}}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
+			<table id="history-table" class="table table-hover">
 			</table>
 		</div>
 	</div>
@@ -279,6 +263,7 @@
 					}
 				}
 				blockPropertySetterInpts(false);
+				fetchResults('{{data.ele.id}}', false);
 				return;
 			}
 		};
@@ -320,7 +305,7 @@
 
 	document.onload = checkElementState("{{data.ele.id}}", "device", updateAllDeviceDetailView);
 	document.onload = createSelect();
-
+	document.onload = fetchResults('{{data.ele.id}}', false);
 	window.setInterval(checkElementState, 2000, "{{data.ele.id}}", "device", updateAllDeviceDetailView);
 
 </script>
