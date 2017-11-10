@@ -1,64 +1,4 @@
-function fetchResultsByNumber(nb_results, deviceId){
-
-    var req = new XMLHttpRequest();
-    req.onreadystatechange = function() {
-        if (this.readyState == 4){
-            if (this.status == 200) {
-                var resp = JSON.parse(this.responseText);
-                var tableData = document.getElementById("history-table");
-                while(tableData.firstChild){
-                    tableData.removeChild(tableData.firstChild);
-                }
-                var i = 0;
-                for(var ele in resp){
-                    i++;
-                    var tr = document.createElement("tr");
-
-                    var td = document.createElement("td");
-                    td.innerHTML = i;
-                    tr.appendChild(td);
-
-                    var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["property_id"];
-                    tr.appendChild(td);
-
-                    var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["property_name"];
-                    tr.appendChild(td);
-
-                    var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["new_value"];
-                    tr.appendChild(td);
-
-                    var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["issuing_mode"];
-                    tr.appendChild(td);
-
-                    var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["timestamp"];
-                    tr.appendChild(td);
-                    
-                    tableData.appendChild(tr);
-                }
-                return true;
-            }else{
-                var resp = JSON.parse(this.responseText);
-                window.alert(resp["error_msg"]);
-                return false;
-            }
-        }
-    };
-
-    // window.alert(data);
-    req.open("GET", get_API_uri("device")+deviceId+"/history/?limit="+nb_results, true);
-    var csrftoken = getCookie("csrftoken");
-    req.setRequestHeader("Content-type", "application/json");
-    req.setRequestHeader("X-CSRFToken", csrftoken);
-    req.setRequestHeader("accept", "application/json");
-    req.send();
-}
-
-function fetchResultsByDate(deviceId){
+function fetchResults(deviceId){
 
     var start_day = document.getElementById("start_day").value;
     var start_month = document.getElementById("start_month").value;
@@ -70,8 +10,12 @@ function fetchResultsByDate(deviceId){
     var start = String(start_year)+"-"+String(start_month)+"-"+String(start_day)
     var end = String(end_year)+"-"+String(end_month)+"-"+String(end_day)
 
+    var n_results = document.getElementById("n_results_to_fetch").value;
+    
     console.info(start);
     console.info(end);
+    console.log(n_results);
+
     var req = new XMLHttpRequest();
     req.onreadystatechange = function() {
         if (this.readyState == 4){
@@ -91,19 +35,11 @@ function fetchResultsByDate(deviceId){
                     tr.appendChild(td);
 
                     var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["property_id"];
+                    td.innerHTML = JSON.stringify(resp[ele]["new_state"]);
                     tr.appendChild(td);
 
                     var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["property_name"];
-                    tr.appendChild(td);
-
-                    var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["new_value"];
-                    tr.appendChild(td);
-
-                    var td = document.createElement("td");
-                    td.innerHTML = resp[ele]["issuing_mode"];
+                    td.innerHTML = resp[ele]["source"];
                     tr.appendChild(td);
 
                     var td = document.createElement("td");
@@ -122,30 +58,12 @@ function fetchResultsByDate(deviceId){
     };
 
     // window.alert(data);
-    req.open("GET", get_API_uri("device")+deviceId+"/history/?start="+start+"&"+"end="+end, true);
+    req.open("GET", get_API_uri("device")+deviceId+"/history/?start="+start+"&"+"end="+end+"&limit="+n_results, true);
     var csrftoken = getCookie("csrftoken");
     req.setRequestHeader("Content-type", "application/json");
     req.setRequestHeader("X-CSRFToken", csrftoken);
     req.setRequestHeader("accept", "application/json");
     req.send();
-}
-
-
-function sortHistoryTable(sortColumn){
-    var tableData = document.getElementById("history-table");
-    var rowData = tableData.getElementsByTagName("tr");
-    for(var i = 0; i < rowData.length - 1; i++){
-        for(var j = 0; j < rowData.length - (i + 1); j++){
-            if(Number(rowData.item(j).getElementsByTagName('td').item(sortColumn).innerHTML.replace(/[^0-9\.]+/g, "")) 
-                < Number(rowData.item(j+1).getElementsByTagName('td').item(sortColumn).innerHTML.replace(/[^0-9\.]+/g, ""))){
-                tableData.insertBefore(rowData.item(j+1),rowData.item(j));
-            }
-            else if(rowData.item(j).getElementsByTagName('td').item(sortColumn).innerHTML
-                < rowData.item(j+1).getElementsByTagName('td').item(sortColumn).innerHTML){
-                tableData.insertBefore(rowData.item(j+1),rowData.item(j));
-            }
-        }
-    }
 }
 
 function createSelect(){

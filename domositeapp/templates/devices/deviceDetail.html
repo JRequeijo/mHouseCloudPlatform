@@ -169,18 +169,15 @@
 	
 	<div class="col-md-12 col-xs-12">
 		<h2 class="page-header">Property Records History</h2>
-		
-		<div class="col-md-2 col-xs-3">
-			# of results:
-			<select onchange="fetchResultsByNumber(this.value, '{{data.ele.id}}')" class="">
+		<div class="col-md-12 col-xs-8">
+			# Max of results:
+			<select id="n_results_to_fetch">
 				<option value="20">20</option>
 				<option value="50">50</option>
 				<option value="100">100</option>
 				<option value="200">200</option>
 			</select>
-		</div>
 
-		<div class="col-md-10 col-xs-3">
 			Start:
 			<select id="start_day" class="day_select">
 			</select>
@@ -196,7 +193,7 @@
 			</select>
 			<select id="end_year" class="year_select">
 			</select>
-			<button class="btn btn-default" onclick="fetchResultsByDate('{{data.ele.id}}')">Fetch</button>
+			<button class="btn btn-default" onclick="fetchResults('{{data.ele.id}}')">Fetch</button>
 		</div>
 		
 		<div class="col-md-12 col-xs-12" style="height: 470px; overflow: scroll;">
@@ -204,8 +201,8 @@
 				<thead>
 					<th>#</th>
 					<th>New State</th>
-					<th onclick="sortHistoryTable(3)">Source</th>
-					<th onclick="sortHistoryTable(4)">Timestamp</th>
+					<th>Source</th>
+					<th>Timestamp</th>
 				</thead>
 				<tbody id="history-table">
 					{% for ch in data.history %}
