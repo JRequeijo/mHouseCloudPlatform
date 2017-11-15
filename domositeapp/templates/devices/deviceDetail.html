@@ -125,7 +125,7 @@
 
 	<hr class="col-md-12 col-xs-12">
 	<div class="col-md-12 col-xs-12">
-		<h2 class="page-header">Properties</h2>
+		<h2 id="properies_setters_header" class="page-header">Properties</h2>
 		<div id="prop_setter_div" class="col-md-8">
 			{% for key, form in data.property_forms.items %}
 			<div class="form-group row">
@@ -155,7 +155,7 @@
 					{% if not form.scalar_setter.field.widget.attrs.readonly %}
 						<button class="btn btn-primary col-md-2 col-xs-3 update-btn"
 								{% if not data.ele.active %} disabled {% endif %}
-								onclick="updateEnumProperty('{{form.scalar_setter.label}}', document.getElementById('property-{{form.scalar_setter.label}}').value, '{{data.ele.id}}'); blockPropertySetterInpts(true)">
+								onclick="updateEnumProperty('{{form.scalar_setter.label}}', document.getElementById('property-{{form.scalar_setter.label}}').value, '{{data.ele.id}}'); blockPropertySetterInpts(true);">
 							UPDATE
 						</button>
 					{% endif %}
@@ -169,18 +169,15 @@
 	
 	<div class="col-md-12 col-xs-12">
 		<h2 class="page-header">Property Records History</h2>
-		
-		<div class="col-md-2 col-xs-3">
-			# of results:
-			<select onchange="fetchResultsByNumber(this.value, '{{data.ele.id}}')" class="">
+		<div class="col-md-12 col-xs-8">
+			# Max of results:
+			<select id="n_results_to_fetch">
 				<option value="20">20</option>
 				<option value="50">50</option>
 				<option value="100">100</option>
 				<option value="200">200</option>
 			</select>
-		</div>
 
-		<div class="col-md-10 col-xs-3">
 			Start:
 			<select id="start_day" class="day_select">
 			</select>
@@ -196,27 +193,11 @@
 			</select>
 			<select id="end_year" class="year_select">
 			</select>
-			<button class="btn btn-default" onclick="fetchResultsByDate('{{data.ele.id}}')">Fetch</button>
+			<button class="btn btn-default" onclick="fetchResults('{{data.ele.id}}', true)">Fetch</button>
 		</div>
 		
 		<div class="col-md-12 col-xs-12" style="height: 470px; overflow: scroll;">
-			<table class="table table-hover">
-				<thead>
-					<th>#</th>
-					<th>New State</th>
-					<th onclick="sortHistoryTable(3)">Source</th>
-					<th onclick="sortHistoryTable(4)">Timestamp</th>
-				</thead>
-				<tbody id="history-table">
-					{% for ch in data.history %}
-						<tr>
-							<td>{{forloop.counter}}</td>
-							<td>{{ch.new_state}}</td>
-							<td>{{ch.source}}</td>
-							<td>{{ch.timestamp}}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
+			<table id="history-table" class="table table-hover">
 			</table>
 		</div>
 	</div>
@@ -271,13 +252,19 @@
 		req.onreadystatechange = function() {
 			if (this.readyState == 4){
 				if (this.status == 200) {
-					// window.alert("Property Updated");
-					return true;
+					window.alert("Property Updated");
 				}else{
 					var resp = JSON.parse(this.responseText);
-					window.alert(resp["error_msg"]);
-					return false;
+					if(resp["error_msg"] != null){
+						window.alert(resp["error_msg"]);
+					}
+					if(resp["detail"] != null){
+						window.alert(resp["detail"]);
+					}
 				}
+				blockPropertySetterInpts(false);
+				fetchResults('{{data.ele.id}}', false);
+				return;
 			}
 		};
 		var dict = {};
@@ -297,6 +284,8 @@
 		var div = document.getElementById("prop_setter_div");
 		var inpts = div.getElementsByTagName("input");
 		var btns = div.getElementsByTagName("button");
+		var radio_btns = document.getElementsByClassName("radio-setter");
+
 
 		for(var i=0; i<inpts.length; i++){
 			if(block){
@@ -316,7 +305,7 @@
 
 	document.onload = checkElementState("{{data.ele.id}}", "device", updateAllDeviceDetailView);
 	document.onload = createSelect();
-
+	document.onload = fetchResults('{{data.ele.id}}', false);
 	window.setInterval(checkElementState, 2000, "{{data.ele.id}}", "device", updateAllDeviceDetailView);
 
 </script>

@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'kigb#@oive8-536vh&+qtg-pd*9pyweu-d4#rp1o4m3bp@%^ci'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'mhouseframework.eu-west-1.elasticbeanstalk.com']
 
@@ -130,3 +130,10 @@ LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 AUTH_USER_MODEL= 'webapp.User'
+
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER='mhouseframework@gmail.com'
+EMAIL_HOST_PASSWORD='Petrucci1'
+EMAIL_USE_TLS=True

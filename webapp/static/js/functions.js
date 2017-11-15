@@ -148,7 +148,7 @@ function updateElemAndRedirect(ele_id, host, red_uri, user, secure){
 
 
 
-/// STILL GOOD ONES
+/// CURRENT ONES
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -182,11 +182,6 @@ function goToURL(host, red_uri, secure){
     }
     window.location.replace(url);
 }
-
-
-
-
-////////////// NEW ONES
 
 //AJAX FUNCTIONS
 function newElement(elementName, host, redirect_uri, secure){
@@ -237,14 +232,23 @@ function updateElement(elementName, elementId, callback, host, redirect_uri, sec
             if(this.status == 200) {
                 return callback(host, redirect_uri, secure);
             }else{
-                var resp = JSON.parse(this.responseText)
-                var err_div = null;
-                for(var ele in resp){
-                    err_div = document.getElementById(elementName+"-"+String(ele)+"-err")
-                    err_div.parentElement.setAttribute("class", "has-error")
-                    err_div.firstElementChild.innerHTML = resp[ele]
+                var resp = JSON.parse(this.responseText);
+                try{
+                    var err_div = null;
+                    for(var ele in resp){
+                        err_div = document.getElementById(elementName+"-"+String(ele)+"-err");
+                        err_div.parentElement.setAttribute("class", "has-error");
+                        err_div.firstElementChild.innerHTML = resp[ele];
+                    }
+                    closeModal("updateModal");
+                }catch(err){
+                    closeModal("updateModal");
+                    if(resp["detail"] != null){
+                        window.alert(resp["detail"]);
+                    }else{
+                        window.alert(this.responseText);
+                    }
                 }
-                closeModal("updateModal");
             }
         }
     };
@@ -604,9 +608,6 @@ function updateAllDeviceDetailView(response, deviceId){
         for(var i=0; i<del_btns.length; i++){
             del_btns[i].setAttribute("disabled", "");
         }
-        for(var i=0; i<radio_btns.length; i++){
-            radio_btns[i].removeAttribute("disabled");
-        }
         var prop_div = null;
         for(var prop in resp["state"]){
             prop_div = document.getElementById("property-"+String(prop)+"-div");
@@ -621,7 +622,7 @@ function updateAllDeviceDetailView(response, deviceId){
                 }
             }
         }
-        blockPropertySetterInpts(false);
+        //blockPropertySetterInpts(false);
     }else{
         if(state_col.firstChild.className != 'glyphicon glyphicon-remove'){
             var span = state_col.firstElementChild
