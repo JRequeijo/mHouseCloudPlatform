@@ -245,6 +245,8 @@ function updateElement(elementName, elementId, callback, host, redirect_uri, sec
                     closeModal("updateModal");
                     if(resp["detail"] != null){
                         window.alert(resp["detail"]);
+                    }else if(resp["error_msg"] != null){
+                        window.alert(resp["error_msg"]);
                     }else{
                         window.alert(this.responseText);
                     }
